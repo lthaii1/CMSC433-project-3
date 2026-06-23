@@ -34,6 +34,11 @@ const collisionZone = [
     {x: 540, y: 220, w: 92,  h: 20}, //middle tree
     {x: 24, y: 650, w: 8,  h: 40}, //left bottom tree
     {x: 145, y: 620, w: 100,  h: 45}, //left bottom house
+    {x: 1070, y: 780, w: 180,  h: 220}, //bottom water
+
+
+
+
 
 
 ];
