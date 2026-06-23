@@ -31,6 +31,9 @@ const collisionZone = [
     {x: 15, y: 165, w: 71, h: 20},  // top left trees
     {x: 24, y: 310, w: 8,  h: 30}, //left tree
     {x: 24, y: 430, w: 8,  h: 30}, //left tree
+    {x: 540, y: 220, w: 92,  h: 20}, //middle tree
+    {x: 24, y: 650, w: 8,  h: 40}, //left bottom tree
+    {x: 145, y: 620, w: 100,  h: 45}, //left bottom house
 
 
 ];
@@ -68,7 +71,7 @@ var baseFrame = 0;
 //used to move around the canvas
 var MoveX =335;
 var MoveY =100;
-var dist = .25;
+var dist = .4;
 
 
 //initialized varaible for the start of each frame
