@@ -44,6 +44,8 @@ const collisionZone = [
     {x: 1100, y: 160, w: 145, h: 20}, //bottom trees
     {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
 
+    {x: 690, y: 720, w: 110, h: 40}, //bottom trees
+
 
 
 
@@ -54,10 +56,23 @@ const collisionZone = [
 
 const encounterZone = [
 
+    {x: 390, y: 540, w: 250, h: 80}, //middle bush
+
 ];
 
 
-function isColliding(newX, newY) {
+function isEncounter(newX, newY){
+    return encounterZone.some(zone => 
+        newX < zone.x + zone.w &&
+        newX + 64 > zone.x &&
+        newY < zone.y + zone.h &&
+        newY + 64 > zone.y
+    );
+
+}
+
+
+function isColliding(newX, newY){
     return collisionZone.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
@@ -109,6 +124,20 @@ function animateDown(){
         MoveY += dist;
     }
 
+    //ADD ENCOUNTER CHECK
+
+    if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
+
+        if(Math.random() < .05){
+
+            stopAnimate();
+
+            alert("pokemon enecounter");
+
+        }
+
+    }
+
     //console.log(MoveY);
 
 
@@ -137,6 +166,18 @@ function animateUp(){
 
     if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){
         MoveY -= dist;
+    }
+
+    if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
+
+        if(Math.random() < .05){
+
+            stopAnimate();
+
+            alert("pokemon enecounter");
+
+        }
+
     }
 
 
@@ -168,6 +209,18 @@ function animateRight(){
         MoveX += dist;
     }
 
+    if( baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
+
+        if(Math.random() < .05){
+
+            stopAnimate();
+
+            alert("pokemon enecounter");
+
+        }
+
+    }
+
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
@@ -194,6 +247,18 @@ function animateLeft(){
 
     if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){
         MoveX -= dist;
+    }
+
+    if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
+
+        if(Math.random() < .05){
+
+            stopAnimate();
+
+            alert("pokemon enecounter");
+
+        }
+
     }
 
 
