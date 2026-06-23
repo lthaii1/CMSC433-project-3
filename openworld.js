@@ -26,6 +26,26 @@ spriteImg.src = "sprite.png";
 
 //SPRITES IMG SIZE IS 64
 
+
+const collisionZone = [
+    {x: 15, y: 165, w: 71, h: 20},  // top left trees
+    {x: 24, y: 310, w: 8,  h: 30}, //left tree
+    {x: 24, y: 430, w: 8,  h: 30}, //left tree
+
+
+];
+
+
+function isColliding(newX, newY) {
+    return collisionZone.some(zone => 
+        newX < zone.x + zone.w &&
+        newX + 64 > zone.x &&
+        newY < zone.y + zone.h &&
+        newY + 64 > zone.y
+    );
+}
+
+
 function init(){
 
     if(started == 0){
@@ -60,9 +80,11 @@ var frameRight =0;
 var action = 0;
 
 
+
+
 function animateDown(){
 
-    if(MoveY < bgImg.height-45){
+    if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){
         MoveY += dist;
     }
 
@@ -92,7 +114,7 @@ function animateDown(){
 
 function animateUp(){
 
-    if(MoveY > 60){
+    if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){
         MoveY -= dist;
     }
 
@@ -121,7 +143,7 @@ function animateUp(){
 
 function animateRight(){
 
-    if(MoveX < 1650){
+    if(MoveX < 1650 && !isColliding(MoveX + dist, MoveY)){
         MoveX += dist;
     }
 
@@ -149,7 +171,7 @@ function animateRight(){
 
 function animateLeft(){
 
-    if(MoveX > -15){
+    if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){
         MoveX -= dist;
     }
 
@@ -239,3 +261,14 @@ document.addEventListener('keyup', function(event){
     }
 
 })
+
+
+
+bgImg.addEventListener('mousemove', (e) => {
+    const rect = bgImg.getBoundingClientRect();
+    const scaleX = bgImg.width / rect.width;
+    const scaleY = bgImg.height / rect.height;
+    const x = Math.floor((e.clientX - rect.left) * scaleX);
+    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    console.log(x, y);
+});
