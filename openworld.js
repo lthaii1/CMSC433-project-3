@@ -38,12 +38,21 @@ const collisionZone = [
     {x: 1120, y: 700, w: 240,  h: 15}, //horzontal line water
     {x: 1390, y: 450, w: 20,  h: 250}, //vertical line water
     {x: 1400, y: 420, w: 300,  h: 125}, //top right body water
-    //need to add very top rightpond
+    {x: 1630, y: 230, w: 20,  h: 140},//need to add very top rightpond
+
+    {x: 945, y: 120, w: 145, h: 70}, //bottom trees
+    {x: 1100, y: 160, w: 145, h: 20}, //bottom trees
+    {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
 
 
 
 
 
+
+
+];
+
+const encounterZone = [
 
 ];
 
