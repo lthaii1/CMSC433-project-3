@@ -35,6 +35,10 @@ const collisionZone = [
     {x: 24, y: 650, w: 8,  h: 40}, //left bottom tree
     {x: 145, y: 620, w: 100,  h: 45}, //left bottom house
     {x: 1070, y: 780, w: 180,  h: 220}, //bottom water
+    {x: 1120, y: 700, w: 240,  h: 15}, //horzontal line water
+    {x: 1390, y: 450, w: 20,  h: 250}, //vertical line water
+    {x: 1400, y: 420, w: 300,  h: 125}, //top right body water
+    //need to add very top rightpond
 
 
 
