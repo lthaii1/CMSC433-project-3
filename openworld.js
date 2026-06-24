@@ -17,14 +17,20 @@ var currBack = background;
         ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     };
 
+const player = {
+
+   playerName: "",
+   pokeballs: 0,
+   pokemon: 0,
+
+};
+
 
 
 //check to see if we need to switch location
 //0 if map not in use, 1 if map in use
 var map2 =0;
 var map1 = 1;
-
-
 
 //binar varaible to check if we started or not
 var started = 0;
@@ -70,7 +76,11 @@ const collisionZone = [
 
 const collisionZoneWater = [
 
-
+    {x: 0, y: 0, w: 370, h: 130},
+    {x: 700, y: 100, w: 1100, h: 35},
+    {x: 750, y: 190, w: 190, h: 150},
+    {x: 0, y: 190, w: 20, h: 150},
+    {x: 0, y: 560, w: 20, h: 450},
 
 
 ];
@@ -204,12 +214,12 @@ var action = 0;
 
 function animateDown(){
 
+    //boundries
     if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){
         MoveY += dist;
     }
 
-    //ADD ENCOUNTER CHECK
-
+    //encounter
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
@@ -456,6 +466,9 @@ document.addEventListener('keydown', function(event){
 
         //player inventory
         //prints it out when tab
+        //list player name, pokemon and thier hp
+        //how many potions you have
+        //how many pokemballs you have
         //when keyup on tab clear
 
     }
