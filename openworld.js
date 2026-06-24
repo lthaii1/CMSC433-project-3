@@ -33,6 +33,11 @@ spriteImg.src = "sprite.png";
 //SPRITES IMG SIZE IS 64
 
 
+//teleport noti
+const teleNoti = new Image();
+teleNoti.src = "swimteleport.png";
+
+
 const collisionZone = [
     {x: 15, y: 165, w: 71, h: 20},  // top left trees
     {x: 24, y: 310, w: 8,  h: 30}, //left tree
@@ -170,6 +175,13 @@ function animateDown(){
     ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameDown * 64,0 * 64, 64, 64,MoveX,MoveY,64, 64);
+
+
+    if(isTeleport(MoveX,MoveY)){
+
+        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -210,6 +222,12 @@ function animateUp(){
     ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameUp * 64,192, 64, 64,MoveX,MoveY,64, 64);
+
+    if(isTeleport(MoveX,MoveY)){
+
+        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -251,6 +269,12 @@ function animateRight(){
     ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameRight * 64,128, 64, 64,MoveX,MoveY,64, 64);
+
+    if(isTeleport(MoveX,MoveY)){
+
+        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -287,10 +311,18 @@ function animateLeft(){
     }
 
 
+
+
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameLeft * 64,64, 64, 64,MoveX,MoveY,64, 64);
+
+    if(isTeleport(MoveX,MoveY)){
+
+        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+
+    }
     
 
     if(baseFrame % updateFrame == 0){
