@@ -47,16 +47,18 @@ const collisionZone = [
     {x: 690, y: 720, w: 110, h: 40}, //bottom trees
 
 
-
-
-
-
-
 ];
 
 const encounterZone = [
 
     {x: 390, y: 540, w: 250, h: 80}, //middle bush
+    {x: 1020, y: 340, w: 230, h: 40}, //mid right bush
+    {x: 1420, y: 340, w: 180, h: 40}, //top right bush
+    {x: 420, y: 250, w: 10,  h: 30}, //middle tree
+    {x: 475, y: 250, w: 10,  h: 5}, //middle tree
+    {x: 50, y: 165, w: 200, h: 70},  // top left trees
+    {x: 80, y: 310, w: 110, h: 190}, //bottom trees
+    {x: 40, y: 520, w: 110, h: 40}, //bottom trees
 
 ];
 
@@ -128,7 +130,7 @@ function animateDown(){
 
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
-        if(Math.random() < .05){
+        if(Math.random() < .01){
 
             stopAnimate();
 
@@ -170,7 +172,7 @@ function animateUp(){
 
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
-        if(Math.random() < .05){
+        if(Math.random() < .01){
 
             stopAnimate();
 
@@ -211,7 +213,7 @@ function animateRight(){
 
     if( baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
 
-        if(Math.random() < .05){
+        if(Math.random() < .01){
 
             stopAnimate();
 
@@ -251,7 +253,7 @@ function animateLeft(){
 
     if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
 
-        if(Math.random() < .05){
+        if(Math.random() < .01){
 
             stopAnimate();
 
@@ -347,14 +349,3 @@ document.addEventListener('keyup', function(event){
     }
 
 })
-
-
-
-bgImg.addEventListener('mousemove', (e) => {
-    const rect = bgImg.getBoundingClientRect();
-    const scaleX = bgImg.width / rect.width;
-    const scaleY = bgImg.height / rect.height;
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
-    console.log(x, y);
-});
