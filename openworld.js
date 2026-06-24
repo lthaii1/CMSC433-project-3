@@ -11,6 +11,12 @@ background.src = "openStart.png";
         ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     };
 
+//check to see if we need to switch location
+//0 if map not in use, 1 if map in use
+var map2 =0;
+var map1 = 1;
+
+
 
 //binar varaible to check if we started or not
 var started = 0;
@@ -43,8 +49,8 @@ const collisionZone = [
     {x: 945, y: 120, w: 145, h: 70}, //bottom trees
     {x: 1100, y: 160, w: 145, h: 20}, //bottom trees
     {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
-
     {x: 690, y: 720, w: 110, h: 40}, //bottom trees
+
 
 
 ];
@@ -61,6 +67,23 @@ const encounterZone = [
     {x: 40, y: 520, w: 110, h: 40}, //bottom trees
 
 ];
+
+const waterTeleport = [
+
+    {x: 1140, y: 660, w: 40, h: 5}, //swim in water
+
+];
+
+
+function isTeleport(newX, newY){
+    return waterTeleport.some(zone => 
+        newX < zone.x + zone.w &&
+        newX + 64 > zone.x &&
+        newY < zone.y + zone.h &&
+        newY + 64 > zone.y
+    );
+
+}
 
 
 function isEncounter(newX, newY){
@@ -321,6 +344,27 @@ document.addEventListener('keydown', function(event){
 
         animateRight();
         action =1;
+
+    }else if(event.key == "e"){
+
+        if(isTeleport(MoveX,MoveY)){
+
+            stopAnimate();
+
+            if(map1 == 1){
+                //logic to switct to 2nd map
+                map1 = 0;
+                map2 = 1;
+
+            }else{
+                //logic to switct to original map
+                map1 = 1;
+                map2 = 0;
+
+            }
+            alert("teleport");
+    
+        }
 
     }
 
