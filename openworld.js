@@ -184,7 +184,7 @@ init();
 //made to slow down the sprite
 //updateframe is amount of ticks until spriteframe can be updated
 //baseframe is updated every function call
-const updateFrame = 15;
+const updateFrame = 20;
 var baseFrame = 0;
 
 
@@ -451,6 +451,12 @@ document.addEventListener('keydown', function(event){
             }
     
         }
+
+    }else if(event.key == "Tab"){
+
+        //player inventory
+        //prints it out when tab
+        //when keyup on tab clear
 
     }
 
