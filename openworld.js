@@ -4,12 +4,20 @@ const ctx = bgImg.getContext("2d");
 const background = new Image();
 background.src = "openStart.png";
 
+const background2 = new Image();
+background2.src = "map2.png";
+
+
+var currBack = background;
+
     background.onload = () => {
 
         ctx.clearRect(0, 0, bgImg.width, bgImg.height);
 
         ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
     };
+
+
 
 //check to see if we need to switch location
 //0 if map not in use, 1 if map in use
@@ -60,6 +68,13 @@ const collisionZone = [
 
 ];
 
+const collisionZoneWater = [
+
+
+
+
+];
+
 const encounterZone = [
 
     {x: 390, y: 540, w: 250, h: 80}, //middle bush
@@ -80,18 +95,35 @@ const waterTeleport = [
 ];
 
 
+const spawnTeleport = [
+
+
+
+];
+
 function isTeleport(newX, newY){
+    if(map1 == 1){
     return waterTeleport.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
         newY < zone.y + zone.h &&
         newY + 64 > zone.y
     );
+    }else{
+        return spawnTeleport.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+    }
 
 }
 
 
 function isEncounter(newX, newY){
+
+    if(map1 == 1){
     return encounterZone.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
@@ -99,16 +131,30 @@ function isEncounter(newX, newY){
         newY + 64 > zone.y
     );
 
+    }
+
+    //map2 encounter
 }
 
 
 function isColliding(newX, newY){
-    return collisionZone.some(zone => 
-        newX < zone.x + zone.w &&
-        newX + 64 > zone.x &&
-        newY < zone.y + zone.h &&
-        newY + 64 > zone.y
-    );
+
+    if(map1 == 1){
+        return collisionZone.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+    }else{
+        return collisionZoneWater.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+    }
+    //map2 collsion
 }
 
 
@@ -172,7 +218,7 @@ function animateDown(){
 
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
-    ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameDown * 64,0 * 64, 64, 64,MoveX,MoveY,64, 64);
 
@@ -219,7 +265,7 @@ function animateUp(){
 
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
-    ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameUp * 64,192, 64, 64,MoveX,MoveY,64, 64);
 
@@ -266,7 +312,7 @@ function animateRight(){
 
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
-    ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameRight * 64,128, 64, 64,MoveX,MoveY,64, 64);
 
@@ -314,7 +360,7 @@ function animateLeft(){
 
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
-    ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
     
     ctx.drawImage(spriteImg,frameLeft * 64,64, 64, 64,MoveX,MoveY,64, 64);
 
@@ -345,7 +391,7 @@ function animateLeft(){
 function stopAnimate() {
     //clear the sprite
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
-    ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
     //draw sprite  back with the first sprite animation
     ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
     //set action back to zero
@@ -385,16 +431,30 @@ document.addEventListener('keydown', function(event){
 
             if(map1 == 1){
                 //logic to switct to 2nd map
+
+                currBack = background2;
+
                 map1 = 0;
                 map2 = 1;
 
+                ctx.clearRect(0,0,bgImg.width,bgImg.height);
+                ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+                MoveX = 400;
+                MoveY = 100;
+
+                ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
+                requestAnimationFrame(init);
+
+
+
             }else{
                 //logic to switct to original map
+                currBack = background;
                 map1 = 1;
                 map2 = 0;
 
             }
-            alert("teleport");
     
         }
 
