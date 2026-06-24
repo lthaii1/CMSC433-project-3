@@ -88,6 +88,11 @@ const encounterZone = [
 
 ];
 
+const encounterZoneWater = [
+
+
+];
+
 const waterTeleport = [
 
     {x: 1140, y: 660, w: 40, h: 5}, //swim in water
@@ -124,13 +129,19 @@ function isTeleport(newX, newY){
 function isEncounter(newX, newY){
 
     if(map1 == 1){
-    return encounterZone.some(zone => 
-        newX < zone.x + zone.w &&
-        newX + 64 > zone.x &&
-        newY < zone.y + zone.h &&
-        newY + 64 > zone.y
-    );
-
+        return encounterZone.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+    }else{
+        return encounterZoneWater.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
     }
 
     //map2 encounter
@@ -191,9 +202,6 @@ var frameRight =0;
 
 var action = 0;
 
-
-
-
 function animateDown(){
 
     if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){
@@ -208,7 +216,7 @@ function animateDown(){
 
             stopAnimate();
 
-            alert("pokemon enecounter");
+            confirm("pokemon enecounter, do you want to battle?");
 
         }
 
@@ -257,7 +265,7 @@ function animateUp(){
 
             stopAnimate();
 
-            alert("pokemon enecounter");
+            confirm("pokemon enecounter, do you want to battle?");
 
         }
 
@@ -304,7 +312,7 @@ function animateRight(){
 
             stopAnimate();
 
-            alert("pokemon enecounter");
+            confirm("pokemon enecounter, do you want to battle?");
 
         }
 
@@ -350,14 +358,11 @@ function animateLeft(){
 
             stopAnimate();
 
-            alert("pokemon enecounter");
+            confirm("pokemon enecounter, do you want to battle?");
 
         }
 
     }
-
-
-
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
@@ -403,37 +408,28 @@ function stopAnimate() {
 document.addEventListener('keydown', function(event){
 
     started = 1;
-    if(event.key == "w"){
 
+    if(event.key == "w"){
         animateUp();
         action =1;
-
     }else if(event.key == "s"){
-
         animateDown();
         action =1;
-
     }else if(event.key == "a"){
-
         animateLeft();
         action =1;
-
     }else if(event.key == "d"){
-
         animateRight();
         action =1;
-
     }else if(event.key == "e"){
 
         if(isTeleport(MoveX,MoveY)){
 
             stopAnimate();
-
             if(map1 == 1){
                 //logic to switct to 2nd map
 
                 currBack = background2;
-
                 map1 = 0;
                 map2 = 1;
 
@@ -445,8 +441,6 @@ document.addEventListener('keydown', function(event){
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
                 requestAnimationFrame(init);
-
-
 
             }else{
                 //logic to switct to original map
@@ -467,21 +461,12 @@ document.addEventListener('keydown', function(event){
 document.addEventListener('keyup', function(event){
 
     if(event.key == "w"){
-
         stopAnimate();
-
     }else if(event.key == "s"){
-
         stopAnimate();
-
     }else if(event.key == "a"){
-
         stopAnimate();
-
     }else if(event.key == "d"){
-
         stopAnimate();
-
     }
-
 })
