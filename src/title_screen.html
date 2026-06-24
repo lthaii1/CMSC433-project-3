@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('../imgs/title-background.jpg') no-repeat center center/cover;
+            filter: blur(8px);
+            z-index: -1;
+            transform: scale(1.1); /* Prevents edge artifacts from the blur filter */
+        }
+
+        .logo {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #ffcb05;
+            text-shadow: 
+                -4px -4px 0 #3b4cca,  
+                 4px -4px 0 #3b4cca,
+                -4px  4px 0 #3b4cca,
+                 4px  4px 0 #3b4cca;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #444;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+        }
+
+        .start-btn {
+            font-size: 1.5rem;
+            color: #888;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .start-btn:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">Pokémon</div>
+    <div class="subtitle">CMSC433 | Group 1</div>
+    <button class="start-btn" onclick="alert('Start!')">Click to Start</button>
+
+</body>
+</html>
