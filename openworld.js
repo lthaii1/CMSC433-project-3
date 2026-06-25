@@ -2,13 +2,13 @@ const bgImg = document.getElementById("backgroundStart");
 const ctx = bgImg.getContext("2d");
 
 const background = new Image();
-background.src = "openStart.png";
+background.src = "proj3_images/openStart.png";
 
 const background2 = new Image();
-background2.src = "watermap.png";
+background2.src = "proj3_images/watermap.png";
 
 const background3 = new Image();
-background3.src = "cavemap.png";
+background3.src = "proj3_images/cavemap.png";
 
 
 var currBack = background;
@@ -46,14 +46,14 @@ const initSpawnX = 335;
 const initSpawnY = 100;
 
 const spriteImg = new Image();
-spriteImg.src = "sprite.png";
+spriteImg.src = "proj3_images/sprite.png";
 
 //SPRITES IMG SIZE IS 64
 
 
 //teleport noti
 const teleNoti = new Image();
-teleNoti.src = "swimteleport.png";
+teleNoti.src = "proj3_images/swimteleport.png";
 
 
 const collisionZone = [
