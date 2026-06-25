@@ -5,7 +5,10 @@ const background = new Image();
 background.src = "openStart.png";
 
 const background2 = new Image();
-background2.src = "map2.png";
+background2.src = "watermap.png";
+
+const background3 = new Image();
+background3.src = "cavemap.png";
 
 
 var currBack = background;
@@ -29,6 +32,7 @@ const player = {
 
 //check to see if we need to switch location
 //0 if map not in use, 1 if map in use
+var map3 = 0;
 var map2 =0;
 var map1 = 1;
 
@@ -81,6 +85,23 @@ const collisionZoneWater = [
     {x: 750, y: 190, w: 190, h: 150},
     {x: 0, y: 190, w: 20, h: 150},
     {x: 0, y: 560, w: 20, h: 450},
+    {x: 1680, y: 190, w: 10, h: 950},
+    {x: 1570, y: 840, w: 180, h: 150},
+    {x: 750, y: 810, w: 190, h: 180},
+    {x: 800, y: 600, w: 90, h: 190},
+    {x: 900, y: 840, w: 90, h: 100},
+    {x: 960, y: 880, w: 600, h: 100},
+    {x: 700, y: 940, w: 40, h: 50},
+    {x: 300, y: 940, w: 160, h: 50},
+    {x: 0, y: 970, w: 300, h: 50},
+
+
+
+];
+
+const collisionZoneCave = [
+
+
 
 
 ];
@@ -103,34 +124,47 @@ const encounterZoneWater = [
 
 ];
 
-const waterTeleport = [
-
-    {x: 1140, y: 660, w: 40, h: 5}, //swim in water
-
-];
-
-
-const spawnTeleport = [
-
+const encounterZoneCave = [
 
 
 ];
+
+const spawnToWater = [{x: 1140, y: 660, w: 40, h: 5},];
+
+const waterToSpawn = [{x: 300, y: 0, w: 370, h: 130},];
+
+const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
+
+const caveToWater = [];
 
 function isTeleport(newX, newY){
     if(map1 == 1){
-    return waterTeleport.some(zone => 
+    return spawnToWater.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
         newY < zone.y + zone.h &&
         newY + 64 > zone.y
     );
-    }else{
-        return spawnTeleport.some(zone => 
+    }else if(map2 == 1){
+        return waterToSpawn.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        ) || waterToCave.some(zone =>
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
+    }else if (map3 ==1){
+        return caveToWater.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+
     }
 
 }
@@ -145,13 +179,21 @@ function isEncounter(newX, newY){
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else{
+    }else if(map2 ==1){
         return encounterZoneWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
+    }else{
+        return encounterZoneCave.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+
     }
 
     //map2 encounter
@@ -167,13 +209,22 @@ function isColliding(newX, newY){
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else{
+    }else if(map2 ==1){
         return collisionZoneWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
+    } else{
+        return collisionZoneCave.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+
+
     }
     //map2 collsion
 }
@@ -243,7 +294,11 @@ function animateDown(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        if(map1 == 1){
+            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }
 
     }
     
@@ -289,7 +344,11 @@ function animateUp(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        if(map1 == 1){
+            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }
 
     }
     
@@ -336,7 +395,11 @@ function animateRight(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        if(map1 == 1){
+            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }
 
     }
     
@@ -381,7 +444,11 @@ function animateLeft(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        if(map1 == 1){
+            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+        } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }
 
     }
     
@@ -452,11 +519,59 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
                 requestAnimationFrame(init);
 
-            }else{
+            }else if(map2 == 1 && waterToSpawn.some(zone =>
+                MoveX < zone.x + zone.w &&
+                MoveX + 64 > zone.x &&
+                MoveY < zone.y + zone.h &&
+                MoveY + 64 > zone.y)){
+
                 //logic to switct to original map
                 currBack = background;
                 map1 = 1;
                 map2 = 0;
+
+                ctx.clearRect(0,0,bgImg.width,bgImg.height);
+                ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+                MoveX = 1140;
+                MoveY = 620;
+
+                ctx.drawImage(spriteImg,0 ,0,64, 64,1140,620,64,64);
+                requestAnimationFrame(init);
+
+            } else if(map2 ==1 && waterToCave.some(zone =>
+                MoveX < zone.x + zone.w &&
+                MoveX + 64 > zone.x &&
+                MoveY < zone.y + zone.h &&
+                MoveY + 64 > zone.y)){
+
+                currBack = background3;
+                map2 = 0;
+                map3 = 1;
+
+                ctx.clearRect(0,0,bgImg.width,bgImg.height);
+                ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+                MoveX = 1130;
+                MoveY = 200;
+
+                ctx.drawImage(spriteImg,0 ,0,64, 64,1130,200,64,64);
+                requestAnimationFrame(init);
+
+            }else if(map3 == 1){
+
+                currBack = background2
+                map3 = 0;
+                map2 = 1;
+
+                ctx.clearRect(0,0,bgImg.width,bgImg.height);
+                ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+                MoveX = 400;
+                MoveY = 100;
+
+                ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
+                requestAnimationFrame(init);
 
             }
     
