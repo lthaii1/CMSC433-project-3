@@ -161,12 +161,14 @@ const encounterZoneCave = [
 const trainerWater = [
 
     {x: 440, y: 410, w: 10, h: 10},
-    {x: 940, y: 430, w: 10, h: 10},
+    {x: 920, y: 430, w: 10, h: 10},
 
 
 ];
 
 const trainerCave = [
+
+    {x: 1220, y: 720, w: 10, h: 10}, 
 
 
 ];
@@ -393,20 +395,14 @@ function animateDown(){
 
 function animateUp(){
 
-    if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){
-        MoveY -= dist;
-    }
+    if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){MoveY -= dist;}
 
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
-
             stopAnimate();
-
             confirm("pokemon enecounter, do you want to battle?");
-
         }
-
     }
 
 
@@ -438,17 +434,15 @@ function animateUp(){
     
 
     if(baseFrame % updateFrame == 0){
-    if(frameUp < 3){
-        frameUp++;
-    }else{
-        frameUp = 0;
-    }
+        if(frameUp < 3){
+            frameUp++;
+        }else{
+            frameUp = 0;
+        }
     }
     baseFrame++;
 
-    if(action == 1){
-    requestAnimationFrame(animateUp);
-    }
+    if(action == 1){requestAnimationFrame(animateUp);}
 }
 
 
@@ -500,36 +494,27 @@ function animateRight(){
     
 
     if(baseFrame % updateFrame == 0){
-    if(frameRight < 3){
-        frameRight++;
-    }else{
-        frameRight = 0;
-    }
+        if(frameRight < 3){
+            frameRight++;
+        }else{
+            frameRight = 0;
+        }
     }
     baseFrame++;
 
-    if(action == 1){
-    requestAnimationFrame(animateRight);
-    }
+    if(action == 1){requestAnimationFrame(animateRight);}
 }
 
 
 function animateLeft(){
 
-    if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){
-        MoveX -= dist;
-    }
+    if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){MoveX -= dist;}
 
     if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
-
         if(Math.random() < .01){
-
             stopAnimate();
-
             confirm("pokemon enecounter, do you want to battle?");
-
         }
-
     }
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
@@ -566,9 +551,7 @@ function animateLeft(){
     }
     baseFrame++;
 
-    if(action == 1){
-    requestAnimationFrame(animateLeft);
-    }
+    if(action == 1){requestAnimationFrame(animateLeft);}
 }
 
 
@@ -693,6 +676,14 @@ document.addEventListener('keydown', function(event){
     }else if (event.key == "f"){
 
         //transition into battle
+
+        //fisher trainer
+        if(map2 ==1){
+
+        }else{
+        //trainer in the mine/cave
+
+        }
 
     }
 
