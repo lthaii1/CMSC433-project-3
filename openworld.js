@@ -298,6 +298,8 @@ function animateDown(){
             ctx.drawImage(teleNoti, 0, 0, 1500, 800);
         } else if (map2 == 1){
             ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }else if(map3 ==1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
         }
 
     }
@@ -347,6 +349,8 @@ function animateUp(){
         if(map1 == 1){
             ctx.drawImage(teleNoti, 0, 0, 1500, 800);
         } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }else if(map3 ==1){
             ctx.drawImage(teleNoti, 100, -300, 1500, 800);
         }
 
@@ -399,6 +403,8 @@ function animateRight(){
             ctx.drawImage(teleNoti, 0, 0, 1500, 800);
         } else if (map2 == 1){
             ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }else if(map3 ==1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
         }
 
     }
@@ -447,6 +453,8 @@ function animateLeft(){
         if(map1 == 1){
             ctx.drawImage(teleNoti, 0, 0, 1500, 800);
         } else if (map2 == 1){
+            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+        }else if(map3 ==1){
             ctx.drawImage(teleNoti, 100, -300, 1500, 800);
         }
 
