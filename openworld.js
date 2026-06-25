@@ -295,11 +295,11 @@ function animateDown(){
     if(isTeleport(MoveX,MoveY)){
 
         if(map1 == 1){
-            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         } else if (map2 == 1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 700, 0, 600, 300);
         }else if(map3 ==1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
     }
@@ -347,11 +347,11 @@ function animateUp(){
     if(isTeleport(MoveX,MoveY)){
 
         if(map1 == 1){
-            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         } else if (map2 == 1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 700, 0, 600, 300);
         }else if(map3 ==1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
     }
@@ -400,11 +400,11 @@ function animateRight(){
     if(isTeleport(MoveX,MoveY)){
 
         if(map1 == 1){
-            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         } else if (map2 == 1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 700, 0, 600, 300);
         }else if(map3 ==1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
     }
@@ -451,11 +451,11 @@ function animateLeft(){
     if(isTeleport(MoveX,MoveY)){
 
         if(map1 == 1){
-            ctx.drawImage(teleNoti, 0, 0, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         } else if (map2 == 1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 700, 0, 600, 300);
         }else if(map3 ==1){
-            ctx.drawImage(teleNoti, 100, -300, 1500, 800);
+            ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
     }
