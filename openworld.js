@@ -135,7 +135,7 @@ const waterToSpawn = [{x: 300, y: 0, w: 370, h: 130},];
 
 const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 
-const caveToWater = [];
+const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 function isTeleport(newX, newY){
     if(map1 == 1){
@@ -511,7 +511,7 @@ document.addEventListener('keydown', function(event){
         if(isTeleport(MoveX,MoveY)){
 
             stopAnimate();
-            if(map1 == 1){
+            if(map1 == 1 ){
                 //logic to switct to 2nd map
 
                 currBack = background2;
@@ -575,10 +575,10 @@ document.addEventListener('keydown', function(event){
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
 
-                MoveX = 400;
-                MoveY = 100;
+                MoveX = 140;
+                MoveY = 900;
 
-                ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
+                ctx.drawImage(spriteImg,0 ,0,64, 64,140,900,64,64);
                 requestAnimationFrame(init);
 
             }
