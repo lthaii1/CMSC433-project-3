@@ -56,6 +56,11 @@ const teleNoti = new Image();
 teleNoti.src = "proj3_images/swimteleport.png";
 
 
+const battleNoti = new Image();
+battleNoti.src = "proj3_images/battlenoti.png";
+
+
+
 const collisionZone = [
     {x: 15, y: 165, w: 71, h: 20},  // top left trees
     {x: 24, y: 310, w: 8,  h: 30}, //left tree
@@ -96,12 +101,36 @@ const collisionZoneWater = [
     {x: 0, y: 970, w: 300, h: 50},
 
 
+    {x: 200, y: 180, w: 60, h: 70}, //top left house
+    {x: 600, y: 210, w: 60, h: 60}, //right, top left house
+    {x: 1060, y: 210, w: 50, h: 60}, //right, top left house
+
+    {x: 190, y: 520, w: 60, h: 60}, //top left house
+    {x: 590, y: 510, w: 60, h: 70}, //top left house
+
+    {x: 1320, y: 510, w: 50, h: 70}, //top left house
+    {x: 1440, y: 510, w: 50, h: 70}, //top left house
+
+
 
 ];
 
 const collisionZoneCave = [
 
+    {x: 0, y: 0, w: 1700, h: 200},
 
+    {x: 750, y: 190, w: 190, h: 150}, //mid pillar
+    {x: 280, y: 190, w: 120, h: 100}, //house
+    //{x: 0, y: 560, w: 20, h: 450},
+    //{x: 1680, y: 190, w: 10, h: 950},
+    //{x: 1570, y: 840, w: 180, h: 150},
+    //{x: 750, y: 810, w: 190, h: 180},
+    //{x: 800, y: 600, w: 90, h: 190},
+    //{x: 900, y: 840, w: 90, h: 100},
+    //{x: 960, y: 880, w: 600, h: 100},
+    //{x: 700, y: 940, w: 40, h: 50},
+    //{x: 300, y: 940, w: 160, h: 50},
+    //{x: 0, y: 970, w: 300, h: 50},
 
 
 ];
@@ -125,6 +154,19 @@ const encounterZoneWater = [
 ];
 
 const encounterZoneCave = [
+
+
+];
+
+const trainerWater = [
+
+    {x: 440, y: 410, w: 10, h: 10},
+    {x: 940, y: 430, w: 10, h: 10},
+
+
+];
+
+const trainerCave = [
 
 
 ];
@@ -159,6 +201,28 @@ function isTeleport(newX, newY){
         );
     }else if (map3 ==1){
         return caveToWater.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+
+    }
+
+}
+
+
+function isBattle(newX, newY){
+
+    if(map2 == 1){
+        return trainerWater.some(zone => 
+            newX < zone.x + zone.w &&
+            newX + 64 > zone.x &&
+            newY < zone.y + zone.h &&
+            newY + 64 > zone.y
+        );
+    }else if (map3 ==1){
+        return trainerCave.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
@@ -303,7 +367,14 @@ function animateDown(){
         }
 
     }
-    
+
+    if(isBattle(MoveX,MoveY)){
+        if (map2 == 1){
+            ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        }else if(map3 ==1){
+            ctx.drawImage(battleNoti, 500, 200, 600, 300);
+        }
+    }
 
     if(baseFrame % updateFrame == 0){
     if(frameDown < 3){
@@ -354,6 +425,15 @@ function animateUp(){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
+    }
+
+
+    if(isBattle(MoveX,MoveY)){
+        if (map2 == 1){
+            ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        }else if(map3 ==1){
+            ctx.drawImage(battleNoti, 500, 200, 600, 300);
+        }
     }
     
 
@@ -408,6 +488,15 @@ function animateRight(){
         }
 
     }
+
+
+    if(isBattle(MoveX,MoveY)){
+        if (map2 == 1){
+            ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        }else if(map3 ==1){
+            ctx.drawImage(battleNoti, 500, 200, 600, 300);
+        }
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -457,7 +546,14 @@ function animateLeft(){
         }else if(map3 ==1){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
+    }
 
+    if(isBattle(MoveX,MoveY)){
+        if (map2 == 1){
+            ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        }else if(map3 ==1){
+            ctx.drawImage(battleNoti, 500, 200, 600, 300);
+        }
     }
     
 
@@ -593,6 +689,10 @@ document.addEventListener('keydown', function(event){
         //how many potions you have
         //how many pokemballs you have
         //when keyup on tab clear
+
+    }else if (event.key == "f"){
+
+        //transition into battle
 
     }
 
