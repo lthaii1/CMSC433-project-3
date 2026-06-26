@@ -10,20 +10,34 @@ background2.src = "proj3_images/watermap.png";
 const background3 = new Image();
 background3.src = "proj3_images/cavemap.png";
 
+const spriteImg = new Image();
+spriteImg.src = "proj3_images/sprite.png";
+//SPRITES IMG SIZE IS 64
+//teleport noti
+const teleNoti = new Image();
+teleNoti.src = "proj3_images/swimteleport.png";
 
+const battleNoti = new Image();
+battleNoti.src = "proj3_images/battlenoti.png";
+
+
+//make an if statment to check the save states map number, 
+//then set this vraible to the coresponding map
 var currBack = background;
 
-    background.onload = () => {
+background.onload = () => {
 
-        ctx.clearRect(0, 0, bgImg.width, bgImg.height);
+    ctx.clearRect(0, 0, bgImg.width, bgImg.height);
 
-        ctx.drawImage(background, 0, 0, bgImg.width, bgImg.height);
-    };
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+};
 
+
+//when database done set player name and pokemon to this
+//add more varaibles
 const player = {
 
    playerName: "",
-   pokeballs: 0,
    pokemon: 0,
 
 };
@@ -32,31 +46,24 @@ const player = {
 
 //check to see if we need to switch location
 //1 for map 1 2 for map 2 3 for map 3
+//when data base is implment make an if statement wether we are loading up 
+//a save game or a new game
+//if new the just set to one
 var currMap =1;
 
 //binar varaible to check if we started or not
+//just used to see if game started primary function is 
+//to spawn in character, once game starts wont be used again
 var started = 0;
 
+
 //initila spawn when start the game
+//if new game then 335, 100
+//if loaded up then set init spawn to matching varible
 //most like will never be used after we implment a save 
 //or will be respawn for the case where ythe trainer lost a battle
 const initSpawnX = 335;
 const initSpawnY = 100;
-
-const spriteImg = new Image();
-spriteImg.src = "proj3_images/sprite.png";
-
-//SPRITES IMG SIZE IS 64
-
-
-//teleport noti
-const teleNoti = new Image();
-teleNoti.src = "proj3_images/swimteleport.png";
-
-
-const battleNoti = new Image();
-battleNoti.src = "proj3_images/battlenoti.png";
-
 
 
 const collisionZone = [
@@ -146,29 +153,26 @@ const encounterZone = [
 
 ];
 
+
+//encounter zones in the water
 const encounterZoneWater = [
 
 
 ];
 
+//encounter zones in the cave
 const encounterZoneCave = [
 
 
 ];
 
 const trainerWater = [
-
     {x: 440, y: 410, w: 10, h: 10},
     {x: 920, y: 450, w: 10, h: 10},
-
-
 ];
 
 const trainerCave = [
-
     {x: 1220, y: 720, w: 10, h: 10}, 
-
-
 ];
 
 const spawnToWater = [{x: 1140, y: 660, w: 40, h: 5},];
@@ -179,6 +183,8 @@ const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
+
+//checks wether player cords are in the zone for teleport
 function isTeleport(newX, newY){
     if(currMap == 1){
     return spawnToWater.some(zone => 
@@ -211,7 +217,7 @@ function isTeleport(newX, newY){
 
 }
 
-
+//checks wether player cords are in the zone for battle
 function isBattle(newX, newY){
 
     if(currMap == 2){
@@ -234,6 +240,7 @@ function isBattle(newX, newY){
 }
 
 
+//checks wether player cords are in the zone for encounter
 function isEncounter(newX, newY){
 
     if(currMap == 1){
@@ -260,10 +267,11 @@ function isEncounter(newX, newY){
 
     }
 
-    //map2 encounter
 }
 
 
+
+//checks wether player cords are in the zone for collision
 function isColliding(newX, newY){
 
     if(currMap == 1){
@@ -290,7 +298,6 @@ function isColliding(newX, newY){
 
 
     }
-    //map2 collsion
 }
 
 
@@ -339,17 +346,10 @@ function animateDown(){
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
-
             stopAnimate();
-
             confirm("pokemon enecounter, do you want to battle?");
-
         }
-
     }
-
-    //console.log(MoveY);
-
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
@@ -662,8 +662,6 @@ document.addEventListener('keydown', function(event){
         //player inventory
         //prints it out when tab
         //list player name, pokemon and thier hp
-        //how many potions you have
-        //how many pokemballs you have
         //when keyup on tab clear
 
     }else if (event.key == "f"){
