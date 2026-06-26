@@ -65,7 +65,7 @@ var started = 0;
 const initSpawnX = 335;
 const initSpawnY = 100;
 
-
+//done
 const collisionZone = [
     {x: 15, y: 165, w: 71, h: 20},  // top left trees
     {x: 24, y: 310, w: 8,  h: 30}, //left tree
@@ -78,16 +78,15 @@ const collisionZone = [
     {x: 1390, y: 450, w: 20,  h: 250}, //vertical line water
     {x: 1400, y: 420, w: 300,  h: 125}, //top right body water
     {x: 1630, y: 230, w: 20,  h: 140},//need to add very top rightpond
-
     {x: 945, y: 120, w: 145, h: 70}, //bottom trees
     {x: 1100, y: 160, w: 145, h: 20}, //bottom trees
     {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
     {x: 690, y: 720, w: 110, h: 40}, //bottom trees
 
-
-
 ];
 
+
+//done
 const collisionZoneWater = [
 
     {x: 0, y: 0, w: 370, h: 130},
@@ -104,19 +103,13 @@ const collisionZoneWater = [
     {x: 700, y: 940, w: 40, h: 50},
     {x: 300, y: 940, w: 160, h: 50},
     {x: 0, y: 970, w: 300, h: 50},
-
-
     {x: 200, y: 180, w: 60, h: 70}, //top left house
     {x: 600, y: 210, w: 60, h: 60}, //right, top left house
     {x: 1060, y: 210, w: 50, h: 60}, //right, top left house
-
     {x: 190, y: 520, w: 60, h: 60}, //top left house
     {x: 590, y: 510, w: 60, h: 70}, //top left house
-
     {x: 1320, y: 510, w: 50, h: 70}, //top left house
     {x: 1440, y: 510, w: 50, h: 70}, //top left house
-
-
 
 ];
 
@@ -140,8 +133,8 @@ const collisionZoneCave = [
 
 ];
 
+//done
 const encounterZone = [
-
     {x: 390, y: 540, w: 250, h: 80}, //middle bush
     {x: 1020, y: 340, w: 230, h: 40}, //mid right bush
     {x: 1420, y: 340, w: 180, h: 40}, //top right bush
@@ -150,7 +143,6 @@ const encounterZone = [
     {x: 50, y: 165, w: 200, h: 70},  // top left trees
     {x: 80, y: 310, w: 110, h: 190}, //bottom trees
     {x: 40, y: 520, w: 110, h: 40}, //bottom trees
-
 ];
 
 
@@ -175,6 +167,7 @@ const trainerCave = [
     {x: 1220, y: 720, w: 10, h: 10}, 
 ];
 
+//these are all fast travel zones
 const spawnToWater = [{x: 1140, y: 660, w: 40, h: 5},];
 
 const waterToSpawn = [{x: 300, y: 0, w: 370, h: 130},];
