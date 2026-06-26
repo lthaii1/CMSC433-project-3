@@ -7,26 +7,42 @@ var battleAnim = {
     playerOffsetX: 0,
     enemyOffsetX: 0,
 };
+var playerIndex = 0;
+var enemyIndex = 0;
+var playerMaxHP = 0;
+var enemyMaxHP = 0;
+var trainer = false;
+var playerFaint = false;
+var enemyFaint = false;
 
-//used to store player pokemon team and items
-var playerTeam = {
+//used to store pokemons of each team 
+var playerTeam = [
+    {name: "", hp: 15, attack: 10, def:90, speed: 90,
+         type1:"", type2:"", img:"proj3_images/1st Generation/126Magmar.png",
+        move1: "", move2: "", move3: "", move4: ""}
 
-}
-//used to store trainer team
-var trainerTeam = {
+]
+var enemyTeam = [
+    {name: "", hp: 15, attack: 10, def:90, speed: 90,
+         type1:"", type2:"", img:"proj3_images/1st Generation/108Lickitung.png",
+        move1: "", move2: "", move3: "", move4: ""}
+]
+//stores all the moves the pokemon's of both teams have 
+//is a dictionary with the move name as the key
+var enemyMoves = {}
+var playerMoves = {}
 
-}
-//stores what text boc is shown
+//stores what text box shows
 var battleUI = {
-    mode: "intro",   // "intro", "moves", "items"
-    message: "A Wild Pokemon Appeared!!",
-    moves: ["Tackle", "Growl", "Ember", "Scratch"]
+    mode: "intro",   // intro, moves, items, text, poke
+    message: "A Wild Pokemon Appeared!",
+    moves: []
 }
 //the battle feilds that are avaliable 
 var backgrounds = {
     "grass": "proj3_images/grassEncounter.png",
     "water" : "proj3_images/waterEncounter.png",
-    "battle": "proj3_images/battleEncounter.png" //might not use
+    "cave": "proj3_images/caveEncounter.png" //might not use
 }
 
 //moves button size
@@ -59,6 +75,20 @@ function loadImage(src, callback) {
     };
     img.src = src;
 }
+//used to load in the teams and set any variables
+function initValues() {
+    //load in player pokemon 
+
+    //loads in enemy pokemon including trainers/wild pokemon
+
+    //loads in your pokemon move
+
+    //sets starting variables
+
+    //checks if we are battling a trainer
+
+
+}
 
 //draws the battle screen with all its componites 
 function drawBattleArena(area) {
@@ -70,17 +100,19 @@ function drawBattleArena(area) {
         //draws the battle feild
         ctx.drawImage(bg, 0, 0, battleIMG.width, battleIMG.height);
         //going to be used to store the pokemon images
-        var pokemon = "proj3_images/1st Generation/108Lickitung.png";
-        var enemy = "proj3_images/1st Generation/126Magmar.png";
+        var pokemon = playerTeam[playerIndex].img;
+        var enemy = enemyTeam[enemyIndex].img;
         //draws your pokemon on the left
-        drawPokemon(pokemon, 100 + battleAnim.playerOffsetX, 680, true);
+        if(!playerFaint)drawPokemon(pokemon, 100 + battleAnim.playerOffsetX, 680, true);
         //draws enmeny pokemon on the right
-        drawPokemon(enemy, 1500 +  battleAnim.enemyOffsetX, 680);
+        if(!enemyFaint)drawPokemon(enemy, 1500 +  battleAnim.enemyOffsetX, 680);
         //player hp bar
-        drawHPBar(100, 350, 250, 25, 39, 39);
+        playerMaxHP = playerTeam[playerIndex].hp;
+        drawHPBar(100, 350, 250, 25, playerTeam[playerIndex].hp, playerMaxHP);
         //enemy hp bar
-        drawHPBar(1350, 350, 250, 25, 45, 45)
-        if (battleUI.mode === "intro") {
+        enemyMaxHP =  enemyTeam[enemyIndex].hp;
+        drawHPBar(1350, 350, 250, 25, enemyTeam[enemyIndex].hp, enemyMaxHP)
+        if (battleUI.mode === "intro" || battleUI.mode === "text") {
             drawTextBox();
         } else if (battleUI.mode === "moves") {
             drawMoveBox();
@@ -90,11 +122,12 @@ function drawBattleArena(area) {
         //shows the amount of pokemon you have left
         drawPokeballCount(20, 40, 6);
         //only draws the pokeball for trainers not wild pokemon
-        if(trainerTeam) drawPokeballCount(1615, 40, 6, true);
+        if(trainer) drawPokeballCount(1615, 40, 6, true);
     
     }
 }
 
+//--The basic drawings of the pokemon, their health and pokemon count
 //draws pokemon in a 250x250 box at the given location and flips the image if needed
 function drawPokemon(imgSrc, x, y, flip = false) {
     loadImage(imgSrc, function(poke) {
@@ -143,6 +176,31 @@ function drawHPBar(x, y, width, height, hp, maxHp) {
     ctx.lineWidth = 1;
     ctx.strokeRect(x, y, width, height);
 }
+//draws the amount of pokemon you have centering the 
+//1st pokeball to the left or right side
+function drawPokeballCount(x, y, count, enemy = false) {
+    var sizeX = 65;   
+    var sizeY = 50;
+    var spacing = 10;   // space between pokeballs
+
+    for (var i = 0; i < count; i++) {
+        if (!enemy) {
+            var pos = x + i * (sizeX + spacing);
+        }
+        else {
+            var pos = x - i * (sizeX + spacing);
+        }
+        ctx.save();
+        //used to show fainted pokemon, goes out left to right
+        if(i == 3) {
+            ctx.filter = "grayscale(100%)";
+        }
+        ctx.drawImage(pokeballImg, pos, y, sizeX, sizeY);
+        ctx.restore();
+    }
+}
+
+//----The diffent texts boxs that could be drawn------
 
 //the textbox for when you encounter a trainer or pokemon
 function drawTextBox() {
@@ -179,20 +237,21 @@ function drawMoveBox() {
     ctx.font = "28px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    //draws the move buttons
-    for (var i = 0; i < battleUI.moves.length; i++) {
-        var move = battleUI.moves[i];
+    //draws 4 move buttons
+    for (var i = 0; i < positions.length; i++) {
         var pos = positions[i];
-
         //button background
         ctx.fillStyle = "#e6e6e6";
         ctx.fillRect(pos.x, pos.y, btnW, btnH);
         //button border
         ctx.strokeStyle = "black";
         ctx.strokeRect(pos.x, pos.y, btnW, btnH);
-        //move text
-        ctx.fillStyle = "black";
-        ctx.fillText(move, pos.x + btnW / 2, pos.y + btnH / 2);
+        //only adds the names for the moves that exits
+        if(i < battleUI.moves.length) {
+            var move = battleUI.moves[i];
+            ctx.fillStyle = "black";
+            ctx.fillText(move, pos.x + btnW / 2, pos.y + btnH / 2);
+        }
     }
 
     var itemX = 1200;
@@ -205,52 +264,45 @@ function drawMoveBox() {
     ctx.fillStyle = "black";
     ctx.fillText("Items", itemX + (btnW -100)/2, itemY + btnH/2);
 }
-
-//draws the amount of pokemon you have centering the 
-//1st pokeball to the left or right side
-function drawPokeballCount(x, y, count, enemy = false) {
-    var sizeX = 65;   
-    var sizeY = 50;
-    var spacing = 10;   // space between pokeballs
-
-    for (var i = 0; i < count; i++) {
-        if (!enemy) {
-            var pos = x + i * (sizeX + spacing);
-        }
-        else {
-            var pos = x - i * (sizeX + spacing);
-        }
-        ctx.save();
-        //used to show fainted pokemon, goes out left to right
-        if(i == 3) {
-            ctx.filter = "grayscale(100%)";
-        }
-        ctx.drawImage(pokeballImg, pos, y, sizeX, sizeY);
-        ctx.restore();
-    }
-
+//draws the pokemon selection box
+function drawPokeBox() {
+    //the main text  box
+    ctx.fillStyle = "white";
+    ctx.fillRect(50, 800, 1600, 180);
+    //border around the box
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(50, 800, 1600, 180);
 }
-function playPlayerAttackAnimation(callback) {
-    let frame = 0;
 
+//----------Animations
+
+//moxes the attacking pokemon lung forwards then goes back
+function attackAnimation(person,callback) {
+    var frame = 0;
+    
     function step() {
         frame++;
-
-        // Frames 1–10: move forward
-        if (frame <= 10) {
-            battleAnim.playerOffsetX = frame * 5;
-        }
-        // Frames 11–20: move back
-        else if (frame <= 20) {
-            battleAnim.playerOffsetX = (20 - frame) * 5;
+        var forward = frame *5;
+        var backward = (20 - frame)*5
+        if(person === "enemy") {
+            forward = -forward;
+            backward = -backward
         }
 
+        if (person === "player") {
+            if (frame <= 10) battleAnim.playerOffsetX = forward;
+            else battleAnim.playerOffsetX = backward;
+        } else {
+            if (frame <= 10) battleAnim.enemyOffsetX = forward;
+            else battleAnim.enemyOffsetX = backward;
+        }
         drawBattleArena(encounter);
-
         if (frame < 20) {
             requestAnimationFrame(step);
         } else {
-            battleAnim.playerOffsetX = 0;
+            if (person === "player") battleAnim.playerOffsetX = 0;
+            else battleAnim.enemyOffsetX = 0;
             callback();
         }
     }
@@ -258,30 +310,29 @@ function playPlayerAttackAnimation(callback) {
     step();
 }
 
-function playEnemyDamageAnimation(callback) {
+//pokemon shakes to show damage
+function damageAnimation(person, callback) {
     var frame = 0;
     var frameMax = 30;
+    //shake amplitude (bigger = stronger shake)
+    var amplitude = 25;
 
     function step() {
         frame++;
-
-        //shake amplitude (bigger = stronger shake)
-        var amplitude = 25;
-
-        //slow down the shake by changing direction every 5 frames
-        if (Math.floor(frame / 5) % 2 === 0) {
-            battleAnim.enemyOffsetX = amplitude;
-        } else {
-            battleAnim.enemyOffsetX = -amplitude;
+        if (person === "player") {
+            if (Math.floor(frame / 5) % 2 === 0) battleAnim.playerOffsetX = amplitude;
+            else battleAnim.playerOffsetX = -amplitude;
         }
-
+        else {
+            if (Math.floor(frame / 5) % 2 === 0) battleAnim.enemyOffsetX = amplitude;
+            else battleAnim.enemyOffsetX = -amplitude;
+        }
         drawBattleArena(encounter);
-
-        // Increase total frames for a longer shake
         if (frame < frameMax) {
             requestAnimationFrame(step);
         } else {
-            battleAnim.enemyOffsetX = 0;
+            if (person === "player") battleAnim.playerOffsetX = 0;
+            else battleAnim.enemyOffsetX = 0;
             callback();
         }
     }
@@ -289,33 +340,24 @@ function playEnemyDamageAnimation(callback) {
     step();
 }
 
-//stores waht stage to draw
-var encounter = "grass";
+//stores what stage to draw
+var encounter = "cave";
 //draws the battle screen
 drawBattleArena(encounter);
+
+
+//----------Mouse click/ Mouse hover/ player interactions-----------------------
+
 battleIMG.addEventListener("click", handleCanvasClick);
+battleIMG.addEventListener("mousemove", handleMouseMove);
 
-function handleCanvasClick(event) {
-// Get mouse position relative to canvas
-    const rect = battleIMG.getBoundingClientRect();
-    const scaleX = battleIMG.width / rect.width;
-    const scaleY = battleIMG.height / rect.height;
-    const mouseX = (event.clientX - rect.left) * scaleX;
-    const mouseY = (event.clientY - rect.top) * scaleY;
-
-    if (battleUI.mode === "intro") {
-        const rect = battleIMG.getBoundingClientRect();
-        const scaleX = battleIMG.width / rect.width;
-        const scaleY = battleIMG.height / rect.height;
-
-        const mouseX = (event.clientX - rect.left) * scaleX;
-        const mouseY = (event.clientY - rect.top) * scaleY;
-
-        // Textbox bounds
-        const boxX = 50;
-        const boxY = 800;
-        const boxW = 1600;
-        const boxH = 180;
+//helper function to see if the mouse is within the box 
+//for the battle ui stuff
+function getHoverTarget(mouseX, mouseY) {
+    //checks if the mouse is within the textbox when the ui 
+    //is in intro mode
+    if (battleUI.mode === "intro" || battleUI.mode === "text") {
+        var boxX = 50, boxY = 800, boxW = 1600, boxH = 180;
 
         if (
             mouseX >= boxX &&
@@ -323,61 +365,105 @@ function handleCanvasClick(event) {
             mouseY >= boxY &&
             mouseY <= boxY + boxH
         ) {
-            // Advance to move selection
-            battleUI.mode = "moves";
-            drawBattleArena(encounter);
-            return;
+            return "textbox";
         }
+        return null;
     }
-    // Only allow clicking moves when in move mode
-    if (battleUI.mode == "moves") {
-        // Check each move button
+    //checks is the mouse is in one of the move boxes
+    //that is a move
+    if (battleUI.mode === "moves") {
         for (let i = 0; i < battleUI.moves.length; i++) {
-            const pos = positions[i];
-
+            var pos = positions[i];
             if (
                 mouseX >= pos.x &&
                 mouseX <= pos.x + btnW &&
                 mouseY >= pos.y &&
                 mouseY <= pos.y + btnH
             ) {
-                const chosenMove = battleUI.moves[i];
-                console.log("You clicked:", chosenMove);
-
-                // Switch UI to text mode to show message
-                battleUI.mode = "intro";
-                battleUI.message = "You used " + chosenMove + "!";
-
-                // Redraw screen
-                drawBattleArena(encounter);
-
-                // Run attack animation → damage animation → finish
-                playPlayerAttackAnimation(function () {
-                    playEnemyDamageAnimation(function () {
-                        console.log("Attack sequence complete");
-                    });
-});
-
+                return { type: "move", index: i };
             }
         }
 
-        // Check Items button
-        const itemX = 1200;
-        const itemY = 900;
-        const itemW = btnW - 100;
-        const itemH = btnH;
-
+        //item button area
+        var itemX = 1200;
+        var itemY = 900;
+        var itemW = btnW - 100;
+        var itemH = btnH;
         if (
             mouseX >= itemX &&
             mouseX <= itemX + itemW &&
             mouseY >= itemY &&
             mouseY <= itemY + itemH
         ) {
-            console.log("Items clicked");
-            battleUI.mode = "items";
-            battleUI.message = "You opened your bag.";
-            drawBattleArena(encounter);
+            return "items";
         }
     }
+    //needs to be implemented
+   //your mouse is within a pokemon selection box
+    if (battleUI.mode === "poke") {
+    }
+
+    return null;
+}
+
+//changes the cursor to the hand if the mouse is in
+//a clickable area
+function handleMouseMove(event) {
+    var rect = battleIMG.getBoundingClientRect();
+    var scaleX = battleIMG.width / rect.width;
+    var scaleY = battleIMG.height / rect.height;
+    //get the mouse posiotion scaled to the battle screen
+    var mouseX = (event.clientX - rect.left) * scaleX;
+    var mouseY = (event.clientY - rect.top) * scaleY;
+    //stores if the mouse in within a clickable area
+    var target = getHoverTarget(mouseX, mouseY);
+    //change the cursur to be the hand if the area is clickable
+    if(target) battleIMG.style.cursor = "pointer";
+    else battleIMG.style.cursor= "default";
+}
+
+function handleCanvasClick(event) {
+    var rect = battleIMG.getBoundingClientRect();
+    var scaleX = battleIMG.width / rect.width;
+    var scaleY = battleIMG.height / rect.height;
+    //stores the mouse postion
+    var mouseX = (event.clientX - rect.left) * scaleX;
+    var mouseY = (event.clientY - rect.top) * scaleY;
+    //store is the mouse is in a clickable area
+    var target = getHoverTarget(mouseX, mouseY);
+
+    //if the mouse is not in a clickable area
+    //then return and dont waste time checking
+    if (!target) return; 
+
+    //for the intro/textbox
+    if (target === "textbox") {
+        battleUI.mode = "moves";
+        drawBattleArena(encounter);
+        return;
+    }
+    //for the move that was clicked
+    if (target.type === "move") {
+        var chosenMove = battleUI.moves[target.index];
+
+        battleUI.mode = "intro";
+        battleUI.message = "You used " + chosenMove + "!";
+        drawBattleArena(encounter);
+        attackAnimation("player", () => {
+            damageAnimation("enemy", () => {
+                console.log("Attack sequence complete");
+            })
+        })
+        return;
+    }
+
+    //for the item button
+    if (target === "items") {
+        battleUI.mode = "intro";
+        battleUI.message = "You opened your bag.";
+        drawBattleArena(encounter);
+        return;
+    }
+    
 }
 
