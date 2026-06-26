@@ -82,6 +82,7 @@ const collisionZone = [
     {x: 1100, y: 160, w: 145, h: 20}, //bottom trees
     {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
     {x: 690, y: 720, w: 110, h: 40}, //bottom trees
+    {x: 940, y: 550, w: 60, h: 200},
 
 ];
 
@@ -120,15 +121,16 @@ const collisionZoneCave = [
     {x: 750, y: 190, w: 190, h: 150}, //mid pillar
     {x: 280, y: 190, w: 120, h: 100}, //house
     //{x: 0, y: 560, w: 20, h: 450},
-    //{x: 1680, y: 190, w: 10, h: 950},
-    //{x: 1570, y: 840, w: 180, h: 150},
+    {x: 1680, y: 190, w: 10, h: 950},
+    {x: 1570, y: 840, w: 180, h: 150},
     //{x: 750, y: 810, w: 190, h: 180},
     //{x: 800, y: 600, w: 90, h: 190},
     //{x: 900, y: 840, w: 90, h: 100},
-    //{x: 960, y: 880, w: 600, h: 100},
-    //{x: 700, y: 940, w: 40, h: 50},
-    //{x: 300, y: 940, w: 160, h: 50},
+    {x: 910, y: 920, w: 640, h: 100},
+    {x: 700, y: 960, w: 200, h: 50},
+    {x: 370, y: 930, w: 100, h: 60},
     //{x: 0, y: 970, w: 300, h: 50},
+    {x: 0, y: 0, w: 40, h: 1000},
 
 
 ];
@@ -148,7 +150,6 @@ const encounterZone = [
 
 //encounter zones in the water
 const encounterZoneWater = [
-
     {x: 480, y: 740, w: 160, h: 100},
     {x: 1320, y: 290, w: 200, h: 230},
     {x: 930, y: 610, w: 200, h: 200}, 
@@ -157,8 +158,7 @@ const encounterZoneWater = [
 
 //encounter zones in the cave
 const encounterZoneCave = [
-
-
+    {x: 0, y: 500, w: 1100, h: 280},
 ];
 
 const trainerWater = [
@@ -313,14 +313,14 @@ init();
 //made to slow down the sprite
 //updateframe is amount of ticks until spriteframe can be updated
 //baseframe is updated every function call
-const updateFrame = 20;
+const updateFrame = 25;
 var baseFrame = 0;
 
 
 //used to move around the canvas
 var MoveX =335;
 var MoveY =100;
-var dist = .4;
+var dist = .3;
 
 
 //initialized varaible for the start of each frame
