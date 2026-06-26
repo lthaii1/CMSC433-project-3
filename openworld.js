@@ -149,7 +149,10 @@ const encounterZone = [
 //encounter zones in the water
 const encounterZoneWater = [
 
-
+    {x: 480, y: 740, w: 160, h: 100},
+    {x: 1320, y: 290, w: 200, h: 230},
+    {x: 930, y: 610, w: 200, h: 200}, 
+    {x: 1130, y: 680, w: 200, h: 100},
 ];
 
 //encounter zones in the cave
