@@ -587,7 +587,7 @@ document.addEventListener('keydown', function(event){
         if(isTeleport(MoveX,MoveY)){
 
             stopAnimate();
-            if(map1 == 1 ){
+            if(currMap==1 ){
                 //logic to switct to 2nd map
 
                 currBack = background2;
@@ -602,7 +602,7 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
                 requestAnimationFrame(init);
 
-            }else if(map2 == 1 && waterToSpawn.some(zone =>
+            }else if(currMap==2 && waterToSpawn.some(zone =>
                 MoveX < zone.x + zone.w &&
                 MoveX + 64 > zone.x &&
                 MoveY < zone.y + zone.h &&
@@ -621,7 +621,7 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1140,620,64,64);
                 requestAnimationFrame(init);
 
-            } else if(map2 ==1 && waterToCave.some(zone =>
+            } else if(currMap==2 && waterToCave.some(zone =>
                 MoveX < zone.x + zone.w &&
                 MoveX + 64 > zone.x &&
                 MoveY < zone.y + zone.h &&
@@ -639,7 +639,7 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1130,200,64,64);
                 requestAnimationFrame(init);
 
-            }else if(map3 == 1){
+            }else if(currMap == 3){
 
                 currBack = background2
                 currMap = 2;
