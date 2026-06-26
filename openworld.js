@@ -664,13 +664,14 @@ document.addEventListener('keydown', function(event){
 
         //transition into battle
 
-        //fisher trainer
-        if(map2 ==1){
+        localStorage.setItem("MoveX", MoveX);
+        localStorage.setItem("MoveY", MoveY);
+        localStorage.setItem("currMap", currMap);
+        localStorage.setItem("returnTo", 'openworld.html');
+        localStorage.setItem("battleType", 'trainer');
 
-        }else{
-        //trainer in the mine/cave
+        window.location.href = "battle.html"
 
-        }
 
     }
 
@@ -690,3 +691,12 @@ document.addEventListener('keyup', function(event){
         stopAnimate();
     }
 })
+
+
+
+/*
+make a set interval save varibles like cordinates, map
+they save to data base
+
+
+*/
