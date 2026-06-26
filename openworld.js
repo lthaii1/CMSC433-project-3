@@ -31,10 +31,8 @@ const player = {
 
 
 //check to see if we need to switch location
-//0 if map not in use, 1 if map in use
-var map3 = 0;
-var map2 =0;
-var map1 = 1;
+//1 for map 1 2 for map 2 3 for map 3
+var currMap =1;
 
 //binar varaible to check if we started or not
 var started = 0;
@@ -161,7 +159,7 @@ const encounterZoneCave = [
 const trainerWater = [
 
     {x: 440, y: 410, w: 10, h: 10},
-    {x: 920, y: 430, w: 10, h: 10},
+    {x: 920, y: 450, w: 10, h: 10},
 
 
 ];
@@ -182,14 +180,14 @@ const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 function isTeleport(newX, newY){
-    if(map1 == 1){
+    if(currMap == 1){
     return spawnToWater.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
         newY < zone.y + zone.h &&
         newY + 64 > zone.y
     );
-    }else if(map2 == 1){
+    }else if(currMap == 2){
         return waterToSpawn.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
@@ -201,7 +199,7 @@ function isTeleport(newX, newY){
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else if (map3 ==1){
+    }else if (currMap ==3 ){
         return caveToWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
@@ -216,14 +214,14 @@ function isTeleport(newX, newY){
 
 function isBattle(newX, newY){
 
-    if(map2 == 1){
+    if(currMap == 2){
         return trainerWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else if (map3 ==1){
+    }else if (currMap == 3){
         return trainerCave.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
@@ -238,14 +236,14 @@ function isBattle(newX, newY){
 
 function isEncounter(newX, newY){
 
-    if(map1 == 1){
+    if(currMap == 1){
         return encounterZone.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else if(map2 ==1){
+    }else if(currMap ==2){
         return encounterZoneWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
@@ -268,14 +266,14 @@ function isEncounter(newX, newY){
 
 function isColliding(newX, newY){
 
-    if(map1 == 1){
+    if(currMap == 1){
         return collisionZone.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
             newY < zone.y + zone.h &&
             newY + 64 > zone.y
         );
-    }else if(map2 ==1){
+    }else if(currMap ==2){
         return collisionZoneWater.some(zone => 
             newX < zone.x + zone.w &&
             newX + 64 > zone.x &&
@@ -299,6 +297,7 @@ function isColliding(newX, newY){
 function init(){
 
     if(started == 0){
+        //in future for save and load replace init spawn x and init spawn y
         ctx.drawImage(spriteImg,0 ,0,64, 64,initSpawnX,initSpawnY,64,64);
         requestAnimationFrame(init);
     }
@@ -360,20 +359,20 @@ function animateDown(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(map1 == 1){
+        if(currMap == 1){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (map2 == 1){
+        } else if (currMap == 2){
             ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (map2 == 1){
+        if (currMap == 2){
             ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(battleNoti, 500, 200, 600, 300);
         }
     }
@@ -387,9 +386,7 @@ function animateDown(){
     }
     baseFrame++;
 
-    if(action == 1){
-    requestAnimationFrame(animateDown);
-    }
+    if(action == 1){requestAnimationFrame(animateDown);}
 }
 
 
@@ -413,11 +410,11 @@ function animateUp(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(map1 == 1){
+        if(currMap == 1){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (map2 == 1){
+        } else if (currMap == 2){
             ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
@@ -425,9 +422,9 @@ function animateUp(){
 
 
     if(isBattle(MoveX,MoveY)){
-        if (map2 == 1){
+        if (currMap == 2){
             ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(battleNoti, 500, 200, 600, 300);
         }
     }
@@ -473,11 +470,11 @@ function animateRight(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(map1 == 1){
+        if(currMap == 1){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (map2 == 1){
+        } else if (currMap == 2){
             ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
 
@@ -485,9 +482,9 @@ function animateRight(){
 
 
     if(isBattle(MoveX,MoveY)){
-        if (map2 == 1){
+        if (currMap == 2){
             ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(battleNoti, 500, 200, 600, 300);
         }
     }
@@ -524,19 +521,19 @@ function animateLeft(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(map1 == 1){
+        if(currMap == 1){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (map2 == 1){
+        } else if (currMap == 2){
             ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(teleNoti, 500, 200, 600, 300);
         }
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (map2 == 1){
+        if (currMap == 2){
             ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(map3 ==1){
+        }else if(currMap ==3){
             ctx.drawImage(battleNoti, 500, 200, 600, 300);
         }
     }
@@ -594,8 +591,7 @@ document.addEventListener('keydown', function(event){
                 //logic to switct to 2nd map
 
                 currBack = background2;
-                map1 = 0;
-                map2 = 1;
+                currMap = 2;
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
@@ -614,8 +610,7 @@ document.addEventListener('keydown', function(event){
 
                 //logic to switct to original map
                 currBack = background;
-                map1 = 1;
-                map2 = 0;
+                currMap = 1;
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
@@ -633,8 +628,7 @@ document.addEventListener('keydown', function(event){
                 MoveY + 64 > zone.y)){
 
                 currBack = background3;
-                map2 = 0;
-                map3 = 1;
+                currMap = 3;
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
@@ -648,8 +642,7 @@ document.addEventListener('keydown', function(event){
             }else if(map3 == 1){
 
                 currBack = background2
-                map3 = 0;
-                map2 = 1;
+                currMap = 2;
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
