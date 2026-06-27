@@ -768,3 +768,6 @@ they save to data base
 
 
 */
+
+
+//make save function which is called by set interval, and before battle and encounter
