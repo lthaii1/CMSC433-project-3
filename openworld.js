@@ -23,6 +23,7 @@ battleNoti.src = "proj3_images/battlenoti.png";
 
 //make an if statment to check the save states map number, 
 //then set this vraible to the coresponding map
+//pull from data base, if not entry exist then default
 var currBack = background;
 
 background.onload = () => {
@@ -343,7 +344,25 @@ function animateDown(){
 
         if(Math.random() < .01){
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+
+            //if yes then save local storage
+            //save battle type as encounter
+            //send to battle screen
+            
+            if(confirm("pokemon enecounter, do you want to battle?")){
+
+                localStorage.setItem("MoveX", MoveX);
+                localStorage.setItem("MoveY", MoveY);
+                localStorage.setItem("currMap", currMap);
+                localStorage.setItem("returnTo", 'openworld.html');
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
+
+
         }
     }
 
@@ -394,7 +413,18 @@ function animateUp(){
 
         if(Math.random() < .01){
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                localStorage.setItem("MoveX", MoveX);
+                localStorage.setItem("MoveY", MoveY);
+                localStorage.setItem("currMap", currMap);
+                localStorage.setItem("returnTo", 'openworld.html');
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
         }
     }
 
@@ -452,7 +482,18 @@ function animateRight(){
 
             stopAnimate();
 
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                localStorage.setItem("MoveX", MoveX);
+                localStorage.setItem("MoveY", MoveY);
+                localStorage.setItem("currMap", currMap);
+                localStorage.setItem("returnTo", 'openworld.html');
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
 
         }
 
@@ -506,7 +547,18 @@ function animateLeft(){
     if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
         if(Math.random() < .01){
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                localStorage.setItem("MoveX", MoveX);
+                localStorage.setItem("MoveY", MoveY);
+                localStorage.setItem("currMap", currMap);
+                localStorage.setItem("returnTo", 'openworld.html');
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
         }
     }
 
@@ -660,7 +712,7 @@ document.addEventListener('keydown', function(event){
         //list player name, pokemon and thier hp
         //when keyup on tab clear
 
-    }else if (event.key == "f"){
+    }else if (event.key == "f" && isBattle(MoveX,MoveY)){
 
         //transition into battle
 
