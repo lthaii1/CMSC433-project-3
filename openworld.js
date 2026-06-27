@@ -20,6 +20,28 @@ teleNoti.src = "proj3_images/swimteleport.png";
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+//load game from returning from battle
+//not done
+function loadGame(){
+
+    if(localStorage.getItem('MoveX')){
+        MoveX = parseFloat(localStorage.getItem('MoveX'));
+        MoveY = parseFloat(localStorage.getItem('MoveY'));
+        currMap = parseInt(localStorage.getItem('currMap'));
+
+        localStorage.removeItem('MoveX');
+        localStorage.removeItem('MoveY');
+        localStorage.removeItem('currMap');
+        localStorage.removeItem('returnTo');
+
+        if(currMap == 1) currBack = background;
+        else if(currMap == 2) currBack = background2;
+        else if(currMap == 3) currBack = background3;
+
+    }
+
+}
+
 
 //make an if statment to check the save states map number, 
 //then set this vraible to the coresponding map
@@ -57,14 +79,6 @@ var currMap =1;
 //to spawn in character, once game starts wont be used again
 var started = 0;
 
-
-//initila spawn when start the game
-//if new game then 335, 100
-//if loaded up then set init spawn to matching varible
-//most like will never be used after we implment a save 
-//or will be respawn for the case where ythe trainer lost a battle
-const initSpawnX = 335;
-const initSpawnY = 100;
 
 //done
 const collisionZone = [
@@ -297,12 +311,21 @@ function isColliding(newX, newY){
     }
 }
 
+//initila spawn when start the game
+//if new game then 335, 100
+//if loaded up then set init spawn to matching varible
+//most like will never be used after we implment a save 
+//or will be respawn for the case where ythe trainer lost a battle
+//used to move around the canvas
+var MoveX =335;
+var MoveY =100;
+var dist = .3;
 
 function init(){
 
     if(started == 0){
         //in future for save and load replace init spawn x and init spawn y
-        ctx.drawImage(spriteImg,0 ,0,64, 64,initSpawnX,initSpawnY,64,64);
+        ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
         requestAnimationFrame(init);
     }
     
@@ -316,13 +339,6 @@ init();
 //baseframe is updated every function call
 const updateFrame = 25;
 var baseFrame = 0;
-
-
-//used to move around the canvas
-var MoveX =335;
-var MoveY =100;
-var dist = .3;
-
 
 //initialized varaible for the start of each frame
 var frameUp = 0;
