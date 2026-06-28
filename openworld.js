@@ -20,28 +20,30 @@ teleNoti.src = "proj3_images/swimteleport.png";
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+const initSpawnX =335;
+const initSpawnY =100;
+
 //load game from returning from battle
+//load from database
 //not done
-function loadGame(){
+async function loadGame(){
 
-    if(localStorage.getItem('MoveX')){
-        //pull from php which pulls from database now
-
-
-        //MoveX = parseFloat(localStorage.getItem('MoveX'));
-        //MoveY = parseFloat(localStorage.getItem('MoveY'));
-        //currMap = parseInt(localStorage.getItem('currMap'));
-
-        //localStorage.removeItem('MoveX');
-        //localStorage.removeItem('MoveY');
-        localStorage.removeItem('currMap');
-        localStorage.removeItem('returnTo');
-
-        if(currMap == 1) currBack = background;
-        else if(currMap == 2) currBack = background2;
-        else if(currMap == 3) currBack = background3;
-
+    //after returning to game remove battle type varaible
+    if(localStorage.getItem("battleType")){
+        localStorage.removeItem("battleType");
     }
+
+    const response = await fetch("");
+    const data = await response.json();
+
+
+
+    ctx.clearRect(0, 0, bgImg.width, bgImg.height);
+
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
+
 
 }
 
@@ -56,6 +58,8 @@ background.onload = () => {
     ctx.clearRect(0, 0, bgImg.width, bgImg.height);
 
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
 };
 
 
@@ -315,7 +319,6 @@ function animateDown(){
                 //instead of local storage just pull from database
 
 
-                localStorage.setItem("returnTo", 'openworld.html');
                 localStorage.setItem("battleType", 'encounter');
         
                 window.location.href = "battle.html"
@@ -335,22 +338,15 @@ function animateDown(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
 
     if(baseFrame % updateFrame == 0){
@@ -379,7 +375,6 @@ function animateUp(){
                 
                 saveGame();
 
-                localStorage.setItem("returnTo", 'openworld.html');
                 localStorage.setItem("battleType", 'encounter');
         
                 window.location.href = "battle.html"
@@ -397,23 +392,15 @@ function animateUp(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
-
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
     
 
@@ -446,7 +433,6 @@ function animateRight(){
                 
                 saveGame();
 
-                localStorage.setItem("returnTo", 'openworld.html');
                 localStorage.setItem("battleType", 'encounter');
         
                 window.location.href = "battle.html"
@@ -466,23 +452,15 @@ function animateRight(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
-
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
     
 
@@ -511,7 +489,6 @@ function animateLeft(){
                 
                 saveGame();
 
-                localStorage.setItem("returnTo", 'openworld.html');
                 localStorage.setItem("battleType", 'encounter');
         
                 window.location.href = "battle.html"
@@ -528,23 +505,16 @@ function animateLeft(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
-    
 
     if(baseFrame % updateFrame == 0){
     if(frameLeft < 3){
@@ -557,8 +527,6 @@ function animateLeft(){
 
     if(action == 1){requestAnimationFrame(animateLeft);}
 }
-
-
 
 
 function stopAnimate() {
@@ -668,8 +636,6 @@ document.addEventListener('keydown', function(event){
         //transition into battle
         saveGame();
 
-
-        localStorage.setItem("returnTo", 'openworld.html');
         localStorage.setItem("battleType", 'trainer');
 
         window.location.href = "battle.html"
@@ -695,11 +661,6 @@ document.addEventListener('keyup', function(event){
 })
 
 
-
-/*
-make a set interval save varibles like cordinates, map
-they save to data base
-*/
 //saves every 10 seconds
 setInterval(saveGame,10000);
 
