@@ -20,10 +20,16 @@ teleNoti.src = "proj3_images/swimteleport.png";
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+
+//after loading screen obtain the player name
+//use player name to query the database
+var playerName = localStorage.getItem("playerName");
+
+
+
 //initila spawn when start the game
 //if new game then 335, 100
 //if loaded up then set init spawn to matching varible
-//most like will never be used after we implment a save 
 //or will be respawn for the case where ythe trainer lost a battle
 //used to move around the canvas
 var MoveX =335;
@@ -56,30 +62,22 @@ var currBack = background;
 //not done
 async function loadGame(){
 
-    if(localStorage.getItem("loadType")){
-        var loadType = localStorage.getItem("loadType")
-        localStorage.removeItem("loadType")
-    }
-
     //after returning to game remove battle type varaible
     if(localStorage.getItem("battleType")){
         localStorage.removeItem("battleType");
     }
 
-    if(loadType == "newPlayer"){
-        MoveX = initSpawnX;
-        MoveY = initSpawnY;
-        currMap = 1;
-        currBack = background;
-        loadType = "";
-
-    }else{
 
         try{
-            const response = await fetch("");
+            const response = await fetch("load.php......");
             const data = await response.json();
 
-            if(!data|| data.x == null || data.y == null || data.map == null){
+            //if database cordinates are still at spawn then its a newplayer
+            //database table for player has to set default 
+            //x cord to 335
+            //y to 100
+            //map to 1
+            if(data.x == 335 || data.y == 100 || data.map == 1){
 
                 MoveX = initSpawnX;
                 MoveY = initSpawnY;
@@ -106,7 +104,6 @@ async function loadGame(){
 
         }
 
-    }
 
 
 
@@ -362,12 +359,6 @@ function animateDown(){
             if(confirm("pokemon enecounter, do you want to battle?")){
 
                 //saveGame();
-
-                //localStorage.setItem("MoveX", MoveX);
-                //localStorage.setItem("MoveY", MoveY);
-                //localStorage.setItem("currMap", currMap);
-                //instead of local storage just pull from database
-
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -720,6 +711,7 @@ function saveGame(){
         headers: {'Content-Type': 'application/json'},
 
         body: JSON.stringify({
+            playerName: playerName,
             MoveX: MoveX,
             MoveY: MoveY,
             currMap: currMap,
