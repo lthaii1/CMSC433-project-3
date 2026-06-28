@@ -59,16 +59,6 @@ background.onload = () => {
 };
 
 
-//when database done set player name and pokemon to this
-//add more varaibles
-const player = {
-
-   playerName: "",
-   pokemon: 0,
-
-};
-
-
 
 //check to see if we need to switch location
 //1 for map 1 2 for map 2 3 for map 3
@@ -308,6 +298,7 @@ function animateDown(){
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
 
             //if yes then save local storage
@@ -382,6 +373,7 @@ function animateUp(){
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
@@ -446,6 +438,7 @@ function animateRight(){
     if( baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
 
             stopAnimate();
 
@@ -512,6 +505,7 @@ function animateLeft(){
 
     if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
@@ -720,18 +714,13 @@ function saveGame(){
         headers: {'Content-Type': 'application/json'},
 
         body: JSON.stringify({
-            playerName: player.playerName,
-            x: MoveX,
-            y: MoveY,
-            map: currMap,
-            pokeballs: player.pokeballs,
-            pokemon: player.pokemon
+            MoveX: MoveX,
+            MoveY: MoveY,
+            currMap: currMap,
         })
-
-
     }
 
-
+    .then(response => response.text())
 
     );
 
