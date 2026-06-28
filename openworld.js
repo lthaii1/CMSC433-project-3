@@ -605,7 +605,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 100;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
-                requestAnimationFrame(init);
 
             }else if(currMap==2 && inArea(MoveX,MoveY,waterToSpawn)){
 
@@ -620,7 +619,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 620;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1140,620,64,64);
-                requestAnimationFrame(init);
 
             } else if(currMap==2 && inArea(MoveX,MoveY,waterToCave)){
 
@@ -634,7 +632,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 200;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1130,200,64,64);
-                requestAnimationFrame(init);
 
             }else if(currMap == 3){
 
@@ -648,7 +645,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 900;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,140,900,64,64);
-                requestAnimationFrame(init);
 
             }
     
@@ -695,8 +691,7 @@ document.addEventListener('keyup', function(event){
 //setInterval(saveGame,10000);
 
 
-//make save function which is called by set interval, and before battle and encounter
-//I used AI here to find how to transfer from javascript to php to our database
+//idk what to do, should i save under playername in the databswe???
 function saveGame(){
 
     fetch("save.php", {
