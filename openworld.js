@@ -13,7 +13,7 @@ background3.src = "proj3_images/cavemap.png";
 const spriteImg = new Image();
 spriteImg.src = "proj3_images/sprite.png";
 //SPRITES IMG SIZE IS 64
-//teleport noti
+
 const teleNoti = new Image();
 teleNoti.src = "proj3_images/swimteleport.png";
 
@@ -50,42 +50,61 @@ var started = 0;
 //pull from data base, if not entry exist then default
 var currBack = background;
 
+
 //load game from returning from battle
 //load from database
 //not done
 async function loadGame(){
+
+    if(localStorage.getItem("loadType")){
+        var loadType = localStorage.getItem("loadType")
+        localStorage.removeItem("loadType")
+    }
 
     //after returning to game remove battle type varaible
     if(localStorage.getItem("battleType")){
         localStorage.removeItem("battleType");
     }
 
-    try{
-        const response = await fetch("");
-        const data = await response.json();
+    if(loadType == "newPlayer"){
+        MoveX = initSpawnX;
+        MoveY = initSpawnY;
+        currMap = 1;
+        currBack = background;
+        loadType = "";
 
-        if(data){
-            MoveX = data.x;
-            MoveY = data.y;
-            currMap =data.map;
-            if(currMap == 1)currBack = background;
-            if(currMap == 2)currBack = background2;
-            if(currMap == 3)currBack = background3;
+    }else{
 
-        }else{
+        try{
+            const response = await fetch("");
+            const data = await response.json();
+
+            if(!data|| data.x == null || data.y == null || data.map == null){
+
+                MoveX = initSpawnX;
+                MoveY = initSpawnY;
+                currMap = 1;
+                currBack = background;
+
+            }else{
+
+                MoveX = data.x;
+                MoveY = data.y;
+                currMap =data.map;
+                if(currMap == 1)currBack = background;
+                if(currMap == 2)currBack = background2;
+                if(currMap == 3)currBack = background3;
+
+            }
+        } catch(fail){
+
             MoveX = initSpawnX;
             MoveY = initSpawnY;
             currMap = 1;
             currBack = background;
 
+
         }
-    } catch(fail){
-
-        MoveX = initSpawnX;
-        MoveY = initSpawnY;
-        currMap = 1;
-        currBack = background;
-
 
     }
 
@@ -229,8 +248,8 @@ const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 
-//checks wether player cords are in the zone for teleport
-//uses some which determines wether an element passes criteria
+
+//uses some to check all collision zones
 //passes x and y cordinate and checks wether it is in the area
 // adds 64 due to size of our sprite
 function inArea(newX,newY,area){
@@ -242,6 +261,7 @@ function inArea(newX,newY,area){
     );
 }
 
+//checks wether player cords are in the zone for teleport
 function isTeleport(newX, newY){
     if(currMap == 1){
         return inArea(newX,newY,spawnToWater);
