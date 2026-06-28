@@ -2,7 +2,7 @@ const battleIMG = document.getElementById("battleScreen");
 const ctx = battleIMG.getContext('2d');
 
 //the pokeball images to show amount of pokemon you have left
-var pokeballImg = new Image();
+const pokeballImg = new Image();
 pokeballImg.src = "proj3_images/pokeball.png";
 
 //the battle feilds that are avaliable 
@@ -23,15 +23,13 @@ var hoverTarget = false;
 //used to store which pokemon is out and the battle situation
 var playerIndex = 0;
 var enemyIndex = 0;
-var playerMaxHP = 0;
-var enemyMaxHP = 0;
-var trainer = false;
+var trainer = true;
 var playerDead = false;
 var enemyDead = false;
 
 //used to store pokemons of each team 
 var playerTeam = [
-    {name: "pok1", hp: 15, maxHP: 15 ,  attack: 10, def:90, speed: 80,
+    {name: "pok1", hp: 15, maxHP: 15 ,  attack: 10, def:90, speed: 60,
          type1:"", type2:"", img:"proj3_images/1st Generation/126Magmar.png",
         move1: "", move2: "", move3: "", move4: ""},
     {name:"poke2", hp: 0},
@@ -44,14 +42,14 @@ var enemyTeam = [
     {name: "poke6", hp: 15, maxHP: 15, attack: 10, def:50, speed: 70,
          type1:"", type2:"", img:"proj3_images/1st Generation/108Lickitung.png",
         move1: "", move2: "", move3: "", move4: ""},
-    {name: "poke6", hp: 0, maxHP: 15, attack: 10, def:90, speed: 90,
-        type1:"", type2:"", img:"proj3_images/1st Generation/108Lickitung.png",
+    {name: "poke7", hp: 20, maxHP: 20, attack: 10, def:90, speed: 90,
+        type1:"", type2:"", img:"proj3_images/1st Generation/006Charizard.png",
     move1: "", move2: "", move3: "", move4: ""},
 ];
 
 //stores the moves of the pokemon of both teams 
 var playerMoves = [
-    {name: "tackle", base_power: "10"},
+    {name: "tackle", base_power: "50000"},
     {name: "peck", base_power: "10"},
     {name: "run", base_power: "10"},
     {name: "fly", base_power: "10"}
@@ -70,7 +68,8 @@ var battleUI = {
     message: "A Wild Pokemon Appeared!",
     moves: ["tackle", "peck", "run", "fly"]
 };
-//postion and demensions of the box
+
+//postion and dimensions of the box
 var boxW = 1600;
 var boxH = 180;
 var boxX = 50;
@@ -79,9 +78,6 @@ var boxY = 800;
 //moves button size
 var btnW = 500;
 var btnH = 60;
-var spacingTop = Math.floor((2*btnH - boxH)/3);
-var spacingSide = Math.floor((2*btnW - boxW)/3);
-
 //move button positions (2×2 grid)
 var positions = [
     { x: 100,  y: 820 }, // Move 1
@@ -118,6 +114,8 @@ function loadImage(src, callback) {
     };
     img.src = src;
 }
+
+//temp stuff until initValues is ready
 var encounter = "grass";
 battleUI.message = "A Wild Pokemon Appeared!";
 drawBattleArena(encounter);
@@ -138,6 +136,7 @@ function initValues() {
     else {
         //load in the trainer
     }
+
     var initialMessage = "";
     //set local varibles
     if (trainer) initialMessage = "Trainer Joe Appeared!";
@@ -170,7 +169,7 @@ function initValues() {
     drawBattleArena(encounter); 
 }
 
-//loads
+//loads the moves of the given pokemon
 function loadMoves(pokemon, teamMoves, player = false) { 
     if (player) battleUI.moves = [];
     
@@ -179,7 +178,7 @@ function loadMoves(pokemon, teamMoves, player = false) {
     for (var m of moves) {
         if (m) {
             teamMoves.push(m);
-            //needs to be updated to store onlt the moves name
+            //needs to be updated to store only the moves name
             //not the move object
             if (player) battleUI.moves.push(m);
         }
@@ -205,10 +204,10 @@ function drawBattleArena(area) {
         drawPokemon(enemy, 1500 + enemyOffsetX, 680);
         
         //player hp bar
-        playerMaxHP = playerTeam[playerIndex].maxHP;
+        var playerMaxHP = playerTeam[playerIndex].maxHP;
         drawHPBar(100, 350, 250, 25, playerTeam[playerIndex].hp, playerMaxHP);
         //enemy hp bar
-        enemyMaxHP =  enemyTeam[enemyIndex].maxHP;
+        var enemyMaxHP =  enemyTeam[enemyIndex].maxHP;
         drawHPBar(1350, 350, 250, 25, enemyTeam[enemyIndex].hp, enemyMaxHP)
         
         //draws the textbox with theinteractons on the bottom
@@ -222,7 +221,8 @@ function drawBattleArena(area) {
     }
 }
 
-//--The basic drawings of the pokemon, their health and pokemon count
+//----------The basic drawings of the pokemon, their health and pokemon count-------------------
+
 //draws pokemon in a 250x250 box at the given location and flips the image if needed
 function drawPokemon(imgSrc, x, y, flip = false) {
     loadImage(imgSrc, function(poke) {
@@ -271,12 +271,13 @@ function drawHPBar(x, y, width, height, hp, maxHp) {
     ctx.lineWidth = 1;
     ctx.strokeRect(x, y, width, height);
 }
+
 //draws the amount of pokemon you have centering the 
 //1st pokeball to the left or right side
 function drawPokeballCount(x, y, count, enemy = false) {
     var sizeX = 65;   
     var sizeY = 50;
-    var spacing = 10;   // space between pokeballs
+    var spacing = 10; 
 
     for (var i = 0; i < count; i++) {
         if (!enemy) {
@@ -284,6 +285,7 @@ function drawPokeballCount(x, y, count, enemy = false) {
         }
         else {
             var pos = x - i * (sizeX + spacing);
+            //used to make the last drawn pokeball represent the 1st pokemon
             var teamIndex = enemyTeam.length -1 -i;
         }
         ctx.save();
@@ -436,6 +438,9 @@ function drawSwitchBox() {
     }
 }
 
+//------- All the functions related battling-------------------
+
+//calculates the damge the given move does to the pokemon
 function calculateDamage(attacker, defender, movePower = 40) {
     // Basic Pokémon-style damage formula
     var level = 5; // fixed level for now
@@ -449,6 +454,7 @@ function calculateDamage(attacker, defender, movePower = 40) {
 
     return Math.floor(base * random);
 }
+
 //reduces the hp of the pokemon taking damage
 function applyDamage(targetTeam, index, dmg) {
     targetTeam[index].hp -= dmg;
@@ -460,6 +466,7 @@ function enemyChooseMove() {
     return Math.floor(Math.random() * enemyMoves.length);
 }
 
+//sees if all the pokemon within a team is dead
 function checkTeamDead(team) {
     for (let i = 0; i < team.length; i++) {
         if (team[i].hp > 0) {
@@ -469,6 +476,7 @@ function checkTeamDead(team) {
     return true; // all Pokémon are fainted
 }
 
+//makes the player attack with correct damage, animations, and text
 function playerAttack( attacker, defender, selectedMove,  callback) {
     attackAnimation("player", () => {
                 var power =  selectedMove.base_power;
@@ -492,7 +500,7 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
                         }
                         //trainer uses their next pokemon
                         enemyIndex++;
-                        loadMoves(enemyTeam[enemyIndex], enemyMoves);
+                        //loadMoves(enemyTeam[enemyIndex], enemyMoves);
                         battleUI.message = "Enemy sent out " + enemyTeam[enemyIndex].name + "!";
                         battleUI.mode = "intro";
                         drawBattleArena(encounter);
@@ -504,6 +512,7 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
             })
 }
 
+//makes the enemy attack with correct damage, animations, and text
 function enemyAttack (attacker, defender, selectedMove,  callback) {
     attackAnimation("enemy", () => {
                     var power = selectedMove.base_power;
@@ -532,6 +541,7 @@ function enemyAttack (attacker, defender, selectedMove,  callback) {
                 })
 }
 
+//controls who attacks first and if the second attack is needed
 function turnManager(playerMoveIndex) {
     var player = playerTeam[playerIndex];
     var enemy = enemyTeam[enemyIndex];
@@ -557,6 +567,9 @@ function turnManager(playerMoveIndex) {
                     });
                 }, 600)
                 
+            } else {
+                battleUI.mo = "intro";
+                drawBattleArena(encounter);
             }
         });
         
@@ -571,10 +584,13 @@ function turnManager(playerMoveIndex) {
                     battleUI.message = "You used " + playMove.name + "!";
                     drawBattleArena(encounter);
                     playerAttack(player, enemy, playMove, () => {
-                        battleIMG.mode = "intro";
+                        battleUI.mode = "intro";
                         drawBattleArena(encounter); 
                     });
                 },500)   
+            }else {
+                battleUI.mode = "intro";
+                drawBattleArena(encounter);
             }
         });
     }
@@ -582,7 +598,7 @@ function turnManager(playerMoveIndex) {
 
 
 
-//----------Animations
+//----------Animations-------------------------------------------------
 
 //moxes the attacking pokemon lung forwards then goes back
 function attackAnimation(person,callback) {
