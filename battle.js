@@ -41,7 +41,7 @@ var playerTeam = [
 
 ];
 var enemyTeam = [
-    {name: "poke6", hp: 15, maxHP: 15, attack: 10, def:50, speed: 90,
+    {name: "poke6", hp: 15, maxHP: 15, attack: 10, def:50, speed: 70,
          type1:"", type2:"", img:"proj3_images/1st Generation/108Lickitung.png",
         move1: "", move2: "", move3: "", move4: ""},
     {name: "poke6", hp: 0, maxHP: 15, attack: 10, def:90, speed: 90,
@@ -66,7 +66,7 @@ var enemyMoves = [
 
 //text box information
 var battleUI = {
-    mode: "intro",   // intro, moves, items, text, switch, end
+    mode: "intro",   // intro, moves, items, battle, switch, end
     message: "A Wild Pokemon Appeared!",
     moves: ["tackle", "peck", "run", "fly"]
 };
@@ -193,23 +193,27 @@ function drawBattleArena(area) {
 
     bg.onload = function () {
         ctx.clearRect(0, 0, battleIMG.width, battleIMG.height)
-        //draws the battle feild
         ctx.drawImage(bg, 0, 0, battleIMG.width, battleIMG.height);
+        
         //going to be used to store the pokemon images
         var pokemon = playerTeam[playerIndex].img;
         var enemy = enemyTeam[enemyIndex].img;
+        
         //draws your pokemon on the left
         drawPokemon(pokemon, 100 + playerOffsetX, 680, true);
         //draws enmeny pokemon on the right
         drawPokemon(enemy, 1500 + enemyOffsetX, 680);
+        
         //player hp bar
         playerMaxHP = playerTeam[playerIndex].maxHP;
         drawHPBar(100, 350, 250, 25, playerTeam[playerIndex].hp, playerMaxHP);
         //enemy hp bar
         enemyMaxHP =  enemyTeam[enemyIndex].maxHP;
         drawHPBar(1350, 350, 250, 25, enemyTeam[enemyIndex].hp, enemyMaxHP)
+        
         //draws the textbox with theinteractons on the bottom
         drawBox();
+        
         //shows the amount of pokemon you have left
         drawPokeballCount(20, 40, playerTeam.length);
         //only draws the pokeball for trainers not wild pokemon
@@ -306,7 +310,7 @@ function drawBox() {
     ctx.lineWidth = 4;
     ctx.strokeRect(50, 800, 1600, 180);
     //chose whats in the box
-    if (battleUI.mode === "intro" || battleUI.mode === "text") {
+    if (battleUI.mode === "intro" || battleUI.mode === "battle" || battleUI.mode === "end") {
             drawTextBox();
         } else if (battleUI.mode === "moves") {
             drawMoveBox();
@@ -329,7 +333,7 @@ function drawTextBox() {
     ctx.textAlign = "center";    
     ctx.textBaseline = "middle";  
     var centerX = boxX + boxW/2;
-    var centerY = boxY + boxW/2;
+    var centerY = boxY + boxH/2;
     ctx.fillText(battleUI.message, centerX, centerY);
     //the click to advance instruction
     ctx.font = "25px Arial";
@@ -451,7 +455,7 @@ function applyDamage(targetTeam, index, dmg) {
     if (targetTeam[index].hp < 0) targetTeam[index].hp = 0;
 }
 
-//returns a number between 0 and the number ofr moves the enemy has
+//returns a number between 0 and the number of moves the enemy has
 function enemyChooseMove() {
     return Math.floor(Math.random() * enemyMoves.length);
 }
@@ -465,15 +469,16 @@ function checkTeamDead(team) {
     return true; // all Pokémon are fainted
 }
 
-function playerAttack( attacker, defender, index,  callback) {
+function playerAttack( attacker, defender, selectedMove,  callback) {
     attackAnimation("player", () => {
-                var power =  playerMoves[index].base_power;
+                var power =  selectedMove.base_power;
                 var dmg = calculateDamage(attacker, defender, power);
                 applyDamage(enemyTeam, enemyIndex, dmg);
                 
                 damageAnimation("enemy", () =>{
                     
                     if(defender.hp <= 0) {
+                        battleUI.mode = "intro";
                         battleUI.message =  defender.name + " fainted!";
                         drawBattleArena(encounter);
                         
@@ -499,23 +504,20 @@ function playerAttack( attacker, defender, index,  callback) {
             })
 }
 
-function enemyAttack (attacker, defender, callback) {
+function enemyAttack (attacker, defender, selectedMove,  callback) {
     attackAnimation("enemy", () => {
-                    var selectedMove = enemyMoves[enemyChooseMove()];
-                    battleUI.message =  attacker.name + " used " +selectedMove.name;
-                    drawBattleArena(encounter);
-
                     var power = selectedMove.base_power;
                     var dmg = calculateDamage(attacker, defender, power);
                     applyDamage(playerTeam, playerIndex, dmg);
 
                     damageAnimation("player", () =>{
                         if(defender.hp <= 0) {
+                            battleUI.mode = "intro";
                             battleUI.message = defender.name + " fainted!";
                             drawBattleArena(encounter);
                             if (checkTeamDead(playerTeam)) {
                                 playerDead = true;
-                                battleUI.message = "You Have dies!!";
+                                battleUI.message = "You died!!";
                                 battleUI.mode = "end";
                                 drawBattleArena(encounter);
                             }
@@ -533,21 +535,46 @@ function enemyAttack (attacker, defender, callback) {
 function turnManager(playerMoveIndex) {
     var player = playerTeam[playerIndex];
     var enemy = enemyTeam[enemyIndex];
+    var playMove = playerMoves[playerMoveIndex];
+    var enemyMove = enemyMoves[enemyChooseMove()];
 
     var playerFirst = player.speed >= enemy.speed;
 
     if (playerFirst) {
-        playerAttack(player, enemy, playerMoveIndex, () => {
-            // Only attack if enemy survived
+        battleUI.mode = "battle";
+        battleUI.message = "You used " + playMove.name + "!";
+        drawBattleArena(encounter);
+        //only does the animation after the text is displayed
+        playerAttack(player, enemy, playMove, () => {
+            //Only attack if enemy survived
             if (!enemyDead && enemy.hp > 0) {
-                enemyAttack(enemy, player);
+                setTimeout ( ()=> {
+                    battleUI.message =  enemy.name + " used " +enemyMove.name;
+                    drawBattleArena(encounter);
+                    enemyAttack(enemy, player, enemyMove, () => {
+                        battleUI.mode = "intro";
+                        drawBattleArena(encounter);
+                    });
+                }, 600)
+                
             }
         });
+        
     } else {
-        enemyAttack(enemy, player, () => {
+        battleUI.mode = "battle";
+        battleUI.message =  enemy.name + " used " +enemyMove.name;
+        drawBattleArena(encounter);
+        enemyAttack(enemy, player, enemyMove, () => {
             // Only attack if player survived
             if (!playerDead && player.hp > 0) {
-                playerAttack(player, enemy, playerMoveIndex);
+                setTimeout(() => {
+                    battleUI.message = "You used " + playMove.name + "!";
+                    drawBattleArena(encounter);
+                    playerAttack(player, enemy, playMove, () => {
+                        battleIMG.mode = "intro";
+                        drawBattleArena(encounter); 
+                    });
+                },500)   
             }
         });
     }
@@ -628,9 +655,13 @@ battleIMG.addEventListener("mousemove", handleMouseMove);
 //helper function to see if the mouse is within the box 
 //for the battle ui stuff
 function getHoverTarget(mouseX, mouseY) {
+
+    //if you are in a battle you can not click on anything
+    if (battleUI.mode === "battle") return null;
+    
     //checks if the mouse is within the textbox when the ui 
     //is in intro mode
-    if (battleUI.mode === "intro" || battleUI.mode === "text") {
+    if (battleUI.mode === "intro") {
         var boxX = 50, boxY = 800, boxW = 1600, boxH = 180;
 
         if (
@@ -714,11 +745,14 @@ function handleMouseMove(event) {
     var rect = battleIMG.getBoundingClientRect();
     var scaleX = battleIMG.width / rect.width;
     var scaleY = battleIMG.height / rect.height;
+    
     //get the mouse posiotion scaled to the battle screen
     var mouseX = (event.clientX - rect.left) * scaleX;
     var mouseY = (event.clientY - rect.top) * scaleY;
+    
     //stores if the mouse in within a clickable area
     hoverTarget = getHoverTarget(mouseX, mouseY);
+   
     //change the cursur to be the hand if the area is clickable
     if(hoverTarget) battleIMG.style.cursor = "pointer";
     else battleIMG.style.cursor= "default";
@@ -727,12 +761,14 @@ function handleMouseMove(event) {
 }
 
 function handleCanvasClick(event) {
+   
     var rect = battleIMG.getBoundingClientRect();
     var scaleX = battleIMG.width / rect.width;
     var scaleY = battleIMG.height / rect.height;
-    //stores the mouse postion
+
     var mouseX = (event.clientX - rect.left) * scaleX;
     var mouseY = (event.clientY - rect.top) * scaleY;
+    
     //store is the mouse is in a clickable area
     var target = getHoverTarget(mouseX, mouseY);
 
@@ -741,6 +777,7 @@ function handleCanvasClick(event) {
     if (!target) return; 
 
     //for the intro/textbox
+    //do not make it clickable if your in battlemode
     if (target === "textbox") {
         battleUI.mode = "moves";
         drawBattleArena(encounter);
@@ -748,11 +785,7 @@ function handleCanvasClick(event) {
     }
     //for the move that was clicked
     if (target.type === "move") {
-        var chosenMove = battleUI.moves[target.index];
-
-        battleUI.mode = "text";
-        battleUI.message = "You used " + chosenMove + "!";
-        drawBattleArena(encounter);
+        
         turnManager(target.index);
     }
 
