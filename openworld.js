@@ -20,9 +20,37 @@ teleNoti.src = "proj3_images/swimteleport.png";
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+const initSpawnX =335;
+const initSpawnY =100;
+
+//load game from returning from battle
+//load from database
+//not done
+async function loadGame(){
+
+    //after returning to game remove battle type varaible
+    if(localStorage.getItem("battleType")){
+        localStorage.removeItem("battleType");
+    }
+
+    const response = await fetch("");
+    const data = await response.json();
+
+
+
+    ctx.clearRect(0, 0, bgImg.width, bgImg.height);
+
+    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
+
+
+}
+
 
 //make an if statment to check the save states map number, 
 //then set this vraible to the coresponding map
+//pull from data base, if not entry exist then default
 var currBack = background;
 
 background.onload = () => {
@@ -30,16 +58,8 @@ background.onload = () => {
     ctx.clearRect(0, 0, bgImg.width, bgImg.height);
 
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
-};
 
-
-//when database done set player name and pokemon to this
-//add more varaibles
-const player = {
-
-   playerName: "",
-   pokemon: 0,
-
+    ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
 };
 
 
@@ -56,14 +76,6 @@ var currMap =1;
 //to spawn in character, once game starts wont be used again
 var started = 0;
 
-
-//initila spawn when start the game
-//if new game then 335, 100
-//if loaded up then set init spawn to matching varible
-//most like will never be used after we implment a save 
-//or will be respawn for the case where ythe trainer lost a battle
-const initSpawnX = 335;
-const initSpawnY = 100;
 
 //done
 const collisionZone = [
@@ -181,34 +193,25 @@ const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 
 //checks wether player cords are in the zone for teleport
-function isTeleport(newX, newY){
-    if(currMap == 1){
-    return spawnToWater.some(zone => 
+//uses some which determines wether an element passes criteria
+//passes x and y cordinate and checks wether it is in the area
+// adds 64 due to size of our sprite
+function inArea(newX,newY,area){
+    return area.some(zone => 
         newX < zone.x + zone.w &&
         newX + 64 > zone.x &&
         newY < zone.y + zone.h &&
         newY + 64 > zone.y
     );
-    }else if(currMap == 2){
-        return waterToSpawn.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        ) || waterToCave.some(zone =>
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
-    }else if (currMap ==3 ){
-        return caveToWater.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+}
 
+function isTeleport(newX, newY){
+    if(currMap == 1){
+        return inArea(newX,newY,spawnToWater);
+    }else if(currMap == 2){
+        return inArea(newX,newY,waterToSpawn) || inArea(newX,newY,waterToCave);
+    }else if (currMap ==3 ){
+        return inArea(newX,newY,caveToWater);
     }
 
 }
@@ -217,20 +220,9 @@ function isTeleport(newX, newY){
 function isBattle(newX, newY){
 
     if(currMap == 2){
-        return trainerWater.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,trainerWater);
     }else if (currMap == 3){
-        return trainerCave.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
-
+        return inArea(newX,newY,trainerCave);
     }
 
 }
@@ -240,26 +232,11 @@ function isBattle(newX, newY){
 function isEncounter(newX, newY){
 
     if(currMap == 1){
-        return encounterZone.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,encounterZone);
     }else if(currMap ==2){
-        return encounterZoneWater.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,encounterZoneWater);
     }else{
-        return encounterZoneCave.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,encounterZoneCave);
 
     }
 
@@ -271,37 +248,29 @@ function isEncounter(newX, newY){
 function isColliding(newX, newY){
 
     if(currMap == 1){
-        return collisionZone.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,collisionZone);
     }else if(currMap ==2){
-        return collisionZoneWater.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
+        return inArea(newX,newY,collisionZoneWater);
     } else{
-        return collisionZoneCave.some(zone => 
-            newX < zone.x + zone.w &&
-            newX + 64 > zone.x &&
-            newY < zone.y + zone.h &&
-            newY + 64 > zone.y
-        );
-
-
+        return inArea(newX,newY,collisionZoneCave);
     }
 }
 
+//initila spawn when start the game
+//if new game then 335, 100
+//if loaded up then set init spawn to matching varible
+//most like will never be used after we implment a save 
+//or will be respawn for the case where ythe trainer lost a battle
+//used to move around the canvas
+var MoveX =335;
+var MoveY =100;
+var dist = .3;
 
 function init(){
 
     if(started == 0){
         //in future for save and load replace init spawn x and init spawn y
-        ctx.drawImage(spriteImg,0 ,0,64, 64,initSpawnX,initSpawnY,64,64);
+        ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
         requestAnimationFrame(init);
     }
     
@@ -316,13 +285,6 @@ init();
 const updateFrame = 25;
 var baseFrame = 0;
 
-
-//used to move around the canvas
-var MoveX =335;
-var MoveY =100;
-var dist = .3;
-
-
 //initialized varaible for the start of each frame
 var frameUp = 0;
 var frameDown = 0;
@@ -334,16 +296,37 @@ var action = 0;
 function animateDown(){
 
     //boundries
-    if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){
-        MoveY += dist;
-    }
+    if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){ MoveY += dist;}
 
     //encounter
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+
+            //if yes then save local storage
+            //save battle type as encounter
+            //send to battle screen
+            
+            if(confirm("pokemon enecounter, do you want to battle?")){
+
+                saveGame();
+
+                //localStorage.setItem("MoveX", MoveX);
+                //localStorage.setItem("MoveY", MoveY);
+                //localStorage.setItem("currMap", currMap);
+                //instead of local storage just pull from database
+
+
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
+
+
         }
     }
 
@@ -355,22 +338,15 @@ function animateDown(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
 
     if(baseFrame % updateFrame == 0){
@@ -393,8 +369,18 @@ function animateUp(){
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                saveGame();
+
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
         }
     }
 
@@ -406,23 +392,15 @@ function animateUp(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
-
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
     
 
@@ -442,17 +420,25 @@ function animateUp(){
 
 function animateRight(){
 
-    if(MoveX < 1650 && !isColliding(MoveX + dist, MoveY)){
-        MoveX += dist;
-    }
+    if(MoveX < 1650 && !isColliding(MoveX + dist, MoveY)){MoveX += dist;}
 
     if( baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
 
         if(Math.random() < .01){
+            action = 0;
 
             stopAnimate();
 
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                saveGame();
+
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
 
         }
 
@@ -466,23 +452,15 @@ function animateRight(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
 
     }
 
-
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
     
 
@@ -505,8 +483,18 @@ function animateLeft(){
 
     if(baseFrame % 40 == 0 && isEncounter(MoveX,MoveY)){
         if(Math.random() < .01){
+            action = 0;
             stopAnimate();
-            confirm("pokemon enecounter, do you want to battle?");
+            if(confirm("pokemon enecounter, do you want to battle?")){
+                
+                saveGame();
+
+                localStorage.setItem("battleType", 'encounter');
+        
+                window.location.href = "battle.html"
+
+
+            }
         }
     }
 
@@ -517,23 +505,16 @@ function animateLeft(){
 
     if(isTeleport(MoveX,MoveY)){
 
-        if(currMap == 1){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        } else if (currMap == 2){
-            ctx.drawImage(teleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(teleNoti, 500, 200, 600, 300);
-        }
+        if(currMap == 1)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(teleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(teleNoti, 500, 200, 600, 300);
+
     }
 
     if(isBattle(MoveX,MoveY)){
-        if (currMap == 2){
-            ctx.drawImage(battleNoti, 700, 0, 600, 300);
-        }else if(currMap ==3){
-            ctx.drawImage(battleNoti, 500, 200, 600, 300);
-        }
+        if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
-    
 
     if(baseFrame % updateFrame == 0){
     if(frameLeft < 3){
@@ -546,8 +527,6 @@ function animateLeft(){
 
     if(action == 1){requestAnimationFrame(animateLeft);}
 }
-
-
 
 
 function stopAnimate() {
@@ -598,11 +577,7 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
                 requestAnimationFrame(init);
 
-            }else if(currMap==2 && waterToSpawn.some(zone =>
-                MoveX < zone.x + zone.w &&
-                MoveX + 64 > zone.x &&
-                MoveY < zone.y + zone.h &&
-                MoveY + 64 > zone.y)){
+            }else if(currMap==2 && inArea(MoveX,MoveY,waterToSpawn)){
 
                 //logic to switct to original map
                 currBack = background;
@@ -617,11 +592,7 @@ document.addEventListener('keydown', function(event){
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1140,620,64,64);
                 requestAnimationFrame(init);
 
-            } else if(currMap==2 && waterToCave.some(zone =>
-                MoveX < zone.x + zone.w &&
-                MoveX + 64 > zone.x &&
-                MoveY < zone.y + zone.h &&
-                MoveY + 64 > zone.y)){
+            } else if(currMap==2 && inArea(MoveX,MoveY,waterToCave)){
 
                 currBack = background3;
                 currMap = 3;
@@ -660,14 +631,11 @@ document.addEventListener('keydown', function(event){
         //list player name, pokemon and thier hp
         //when keyup on tab clear
 
-    }else if (event.key == "f"){
+    }else if (event.key == "f" && isBattle(MoveX,MoveY)){
 
         //transition into battle
+        saveGame();
 
-        localStorage.setItem("MoveX", MoveX);
-        localStorage.setItem("MoveY", MoveY);
-        localStorage.setItem("currMap", currMap);
-        localStorage.setItem("returnTo", 'openworld.html');
         localStorage.setItem("battleType", 'trainer');
 
         window.location.href = "battle.html"
@@ -693,10 +661,29 @@ document.addEventListener('keyup', function(event){
 })
 
 
-
-/*
-make a set interval save varibles like cordinates, map
-they save to data base
+//saves every 10 seconds
+setInterval(saveGame,10000);
 
 
-*/
+//make save function which is called by set interval, and before battle and encounter
+//I used AI here to find how to transfer from javascript to php to our database
+function saveGame(){
+
+    fetch("save.php", {
+
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+
+        body: JSON.stringify({
+            MoveX: MoveX,
+            MoveY: MoveY,
+            currMap: currMap,
+        })
+    }
+
+    .then(response => response.text())
+
+    );
+
+
+}
