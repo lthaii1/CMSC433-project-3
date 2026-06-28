@@ -13,15 +13,49 @@ background3.src = "proj3_images/cavemap.png";
 const spriteImg = new Image();
 spriteImg.src = "proj3_images/sprite.png";
 //SPRITES IMG SIZE IS 64
-//teleport noti
+
 const teleNoti = new Image();
 teleNoti.src = "proj3_images/swimteleport.png";
 
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+
+//after loading screen obtain the player name
+//use player name to query the database
+var playerName = localStorage.getItem("playerName");
+
+
+
+//initila spawn when start the game
+//if new game then 335, 100
+//if loaded up then set init spawn to matching varible
+//or will be respawn for the case where ythe trainer lost a battle
+//used to move around the canvas
+var MoveX =335;
+var MoveY =100;
+var dist = .3;
+
 const initSpawnX =335;
 const initSpawnY =100;
+
+//check to see if we need to switch location
+//1 for map 1 2 for map 2 3 for map 3
+//when data base is implment make an if statement wether we are loading up 
+//a save game or a new game
+//if new the just set to one
+var currMap =1;
+
+//binar varaible to check if we started or not
+//just used to see if game started primary function is 
+//to spawn in character, once game starts wont be used again
+var started = 0;
+
+//make an if statment to check the save states map number, 
+//then set this vraible to the coresponding map
+//pull from data base, if not entry exist then default
+var currBack = background;
+
 
 //load game from returning from battle
 //load from database
@@ -33,8 +67,43 @@ async function loadGame(){
         localStorage.removeItem("battleType");
     }
 
-    const response = await fetch("");
-    const data = await response.json();
+
+        try{
+            const response = await fetch("load.php......");
+            const data = await response.json();
+
+            //if database cordinates are still at spawn then its a newplayer
+            //database table for player has to set default 
+            //x cord to 335
+            //y to 100
+            //map to 1
+            if(data.x == 335 || data.y == 100 || data.map == 1){
+
+                MoveX = initSpawnX;
+                MoveY = initSpawnY;
+                currMap = 1;
+                currBack = background;
+
+            }else{
+
+                MoveX = data.x;
+                MoveY = data.y;
+                currMap =data.map;
+                if(currMap == 1)currBack = background;
+                if(currMap == 2)currBack = background2;
+                if(currMap == 3)currBack = background3;
+
+            }
+        } catch(fail){
+
+            MoveX = initSpawnX;
+            MoveY = initSpawnY;
+            currMap = 1;
+            currBack = background;
+
+
+        }
+
 
 
 
@@ -48,33 +117,17 @@ async function loadGame(){
 }
 
 
-//make an if statment to check the save states map number, 
-//then set this vraible to the coresponding map
-//pull from data base, if not entry exist then default
-var currBack = background;
+//Bug where load game would be called and images would be load
+//this makes sure that all 6 images are load before load game gets called
+//used as a source, images were not loading on load causing blank screen
+//https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded
+const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti];
 
-background.onload = () => {
-
-    ctx.clearRect(0, 0, bgImg.width, bgImg.height);
-
-    ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
-
-    ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
-};
+Promise.all(allImgs.map(img => new Promise(resolve => { img.onload = resolve; }))).then(() => {
+    loadGame();
+});
 
 
-
-//check to see if we need to switch location
-//1 for map 1 2 for map 2 3 for map 3
-//when data base is implment make an if statement wether we are loading up 
-//a save game or a new game
-//if new the just set to one
-var currMap =1;
-
-//binar varaible to check if we started or not
-//just used to see if game started primary function is 
-//to spawn in character, once game starts wont be used again
-var started = 0;
 
 
 //done
@@ -192,8 +245,8 @@ const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 
-//checks wether player cords are in the zone for teleport
-//uses some which determines wether an element passes criteria
+
+//uses some to check all collision zones
 //passes x and y cordinate and checks wether it is in the area
 // adds 64 due to size of our sprite
 function inArea(newX,newY,area){
@@ -205,6 +258,7 @@ function inArea(newX,newY,area){
     );
 }
 
+//checks wether player cords are in the zone for teleport
 function isTeleport(newX, newY){
     if(currMap == 1){
         return inArea(newX,newY,spawnToWater);
@@ -256,16 +310,9 @@ function isColliding(newX, newY){
     }
 }
 
-//initila spawn when start the game
-//if new game then 335, 100
-//if loaded up then set init spawn to matching varible
-//most like will never be used after we implment a save 
-//or will be respawn for the case where ythe trainer lost a battle
-//used to move around the canvas
-var MoveX =335;
-var MoveY =100;
-var dist = .3;
 
+
+/*
 function init(){
 
     if(started == 0){
@@ -278,7 +325,7 @@ function init(){
 
 init();
 
-
+*/
 //made to slow down the sprite
 //updateframe is amount of ticks until spriteframe can be updated
 //baseframe is updated every function call
@@ -311,13 +358,7 @@ function animateDown(){
             
             if(confirm("pokemon enecounter, do you want to battle?")){
 
-                saveGame();
-
-                //localStorage.setItem("MoveX", MoveX);
-                //localStorage.setItem("MoveY", MoveY);
-                //localStorage.setItem("currMap", currMap);
-                //instead of local storage just pull from database
-
+                //saveGame();
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -373,7 +414,7 @@ function animateUp(){
             stopAnimate();
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
-                saveGame();
+                //saveGame();
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -431,7 +472,7 @@ function animateRight(){
 
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
-                saveGame();
+                //saveGame();
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -487,7 +528,7 @@ function animateLeft(){
             stopAnimate();
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
-                saveGame();
+                //saveGame();
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -575,7 +616,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 100;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,400,100,64,64);
-                requestAnimationFrame(init);
 
             }else if(currMap==2 && inArea(MoveX,MoveY,waterToSpawn)){
 
@@ -590,7 +630,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 620;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1140,620,64,64);
-                requestAnimationFrame(init);
 
             } else if(currMap==2 && inArea(MoveX,MoveY,waterToCave)){
 
@@ -604,7 +643,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 200;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,1130,200,64,64);
-                requestAnimationFrame(init);
 
             }else if(currMap == 3){
 
@@ -618,7 +656,6 @@ document.addEventListener('keydown', function(event){
                 MoveY = 900;
 
                 ctx.drawImage(spriteImg,0 ,0,64, 64,140,900,64,64);
-                requestAnimationFrame(init);
 
             }
     
@@ -634,7 +671,7 @@ document.addEventListener('keydown', function(event){
     }else if (event.key == "f" && isBattle(MoveX,MoveY)){
 
         //transition into battle
-        saveGame();
+        //saveGame();
 
         localStorage.setItem("battleType", 'trainer');
 
@@ -662,11 +699,10 @@ document.addEventListener('keyup', function(event){
 
 
 //saves every 10 seconds
-setInterval(saveGame,10000);
+//setInterval(saveGame,10000);
 
 
-//make save function which is called by set interval, and before battle and encounter
-//I used AI here to find how to transfer from javascript to php to our database
+//idk what to do, should i save under playername in the databswe???
 function saveGame(){
 
     fetch("save.php", {
@@ -675,6 +711,7 @@ function saveGame(){
         headers: {'Content-Type': 'application/json'},
 
         body: JSON.stringify({
+            playerName: playerName,
             MoveX: MoveX,
             MoveY: MoveY,
             currMap: currMap,
