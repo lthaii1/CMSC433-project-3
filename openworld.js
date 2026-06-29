@@ -803,13 +803,6 @@ document.addEventListener('keydown', function(event){
     
         }
 
-    }else if(event.key == "Tab"){
-
-        //player inventory
-        //prints it out when tab
-        //list player name, pokemon and thier hp
-        //when keyup on tab clear
-
     }else if (event.key == "f" && isBattle(MoveX,MoveY)){
 
         //transition into battle
@@ -821,6 +814,8 @@ document.addEventListener('keydown', function(event){
 
 
     }else if(event.key == "f" && isSlot(MoveX,MoveY)){
+
+        saveGame();
 
         window.location.href = ".html"
 
