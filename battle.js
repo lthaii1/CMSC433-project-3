@@ -257,16 +257,19 @@ function drawPokemon(imgSrc, x, y, flip = false) {
 function drawHPBar(x, y, width, height, hp, maxHp) {
     ctx.fillStyle = "#444";
     ctx.fillRect(x, y, width, height);
+    
     //hp percent
     var percent = hp / maxHp;
     var barWidth = width * percent;
+   
     //hp color
-    if (percent > 0.5) ctx.fillStyle = "#4CAF50";      // green
-    else if (percent > 0.2) ctx.fillStyle = "#FFEB3B"; // yellow
-    else ctx.fillStyle = "#F44336";                    // red
+    if (percent > 0.5) ctx.fillStyle = "#4CAF50";      
+    else if (percent > 0.2) ctx.fillStyle = "#FFEB3B"; 
+    else ctx.fillStyle = "#F44336";                    
+    
     //fill HP
     ctx.fillRect(x, y, barWidth, height);
-    //border
+   
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
     ctx.strokeRect(x, y, width, height);
@@ -322,6 +325,8 @@ function drawBox() {
             drawSwitchBox();
         }
 }
+
+//puts text in the text box
 function drawTextBox() {
     //highlights the box 
     if (hoverTarget === "textbox") ctx.fillStyle = "#ffffcc";
@@ -338,9 +343,9 @@ function drawTextBox() {
     var centerY = boxY + boxH/2;
     ctx.fillText(battleUI.message, centerX, centerY);
     //the click to advance instruction
-    ctx.font = "25px Arial";
-    ctx.fillStyle = " dark grey";
-    ctx.fillText("Click to Advance",1500, 920 );
+    //ctx.font = "25px Arial";
+    //ctx.fillStyle = " dark grey";
+    //ctx.fillText("Click to Advance",1500, 920 );
 }
 
 function drawMoveBox() {
@@ -558,14 +563,14 @@ function turnManager(playerMoveIndex) {
         playerAttack(player, enemy, playMove, () => {
             //Only attack if enemy survived
             if (!enemyDead && enemy.hp > 0) {
-                setTimeout ( ()=> {
+               // setTimeout ( ()=> {
                     battleUI.message =  enemy.name + " used " +enemyMove.name;
                     drawBattleArena(encounter);
                     enemyAttack(enemy, player, enemyMove, () => {
                         battleUI.mode = "intro";
                         drawBattleArena(encounter);
                     });
-                }, 600)
+               // }, 600)
                 
             } else {
                 battleUI.mo = "intro";
@@ -580,14 +585,14 @@ function turnManager(playerMoveIndex) {
         enemyAttack(enemy, player, enemyMove, () => {
             // Only attack if player survived
             if (!playerDead && player.hp > 0) {
-                setTimeout(() => {
+                //setTimeout(() => {
                     battleUI.message = "You used " + playMove.name + "!";
                     drawBattleArena(encounter);
                     playerAttack(player, enemy, playMove, () => {
                         battleUI.mode = "intro";
                         drawBattleArena(encounter); 
                     });
-                },500)   
+               // },500)   
             }else {
                 battleUI.mode = "intro";
                 drawBattleArena(encounter);
@@ -602,65 +607,72 @@ function turnManager(playerMoveIndex) {
 
 //moxes the attacking pokemon lung forwards then goes back
 function attackAnimation(person,callback) {
-    var frame = 0;
+    var duration = 400;
+    var half = duration / 2;
+    var start = performance.now();
     
-    function step() {
-        frame++;
-        var forward = frame *5;
-        var backward = (20 - frame)*5
-        if(person === "enemy") {
-            forward = -forward;
-            backward = -backward
-        }
+    function step(timestamp) {
+        var elapsed = timestamp - start;
 
-        if (person === "player") {
-            if (frame <= 10) playerOffsetX = forward;
-            else playerOffsetX = backward;
-        } else {
-            if (frame <= 10) enemyOffsetX = forward;
-            else enemyOffsetX = backward;
-        }
-        drawBattleArena(encounter);
-        if (frame < 20) {
+        var offset;
+
+        if (elapsed < half) {
+                //forward motion
+                offset = (elapsed / half) * 50;
+            } else if (elapsed < duration) {
+                //backward motion
+                offset = ((duration - elapsed) / half) * 50;
+            } else {
+                //animation done
+                if (person === "player") playerOffsetX = 0;
+                else enemyOffsetX = 0;
+                drawBattleArena(encounter);
+                callback();
+                return;
+            }
+
+            if (person === "enemy") offset = -offset;
+
+            if (person === "player") playerOffsetX = offset;
+            else enemyOffsetX = offset;
+
+            drawBattleArena(encounter);
             requestAnimationFrame(step);
-        } else {
-            if (person === "player") playerOffsetX = 0;
-            else enemyOffsetX = 0;
-            callback();
         }
-    }
+        
 
-    step();
+    requestAnimationFrame(step);
 }
 
 //pokemon shakes to show damage
 function damageAnimation(person, callback) {
-    var frame = 0;
-    var frameMax = 30;
-    //shake amplitude (bigger = stronger shake)
+    var duration = 300; // total shake time
+    var start = performance.now();
     var amplitude = 25;
 
-    function step() {
-        frame++;
-        if (person === "player") {
-            if (Math.floor(frame / 5) % 2 === 0) playerOffsetX = amplitude;
-            else playerOffsetX = -amplitude;
-        }
-        else {
-            if (Math.floor(frame / 5) % 2 === 0) enemyOffsetX = amplitude;
-            else enemyOffsetX = -amplitude;
-        }
-        drawBattleArena(encounter);
-        if (frame < frameMax) {
-            requestAnimationFrame(step);
-        } else {
+    function step(timestamp) {
+        var elapsed = timestamp - start;
+
+        if (elapsed >= duration) {
             if (person === "player") playerOffsetX = 0;
             else enemyOffsetX = 0;
+            drawBattleArena(encounter);
             callback();
+            return;
         }
+
+        var phase = Math.floor(elapsed / 50) % 2;
+        if (pase === 0) offset = amplitude;
+        else offset = -amplitude
+
+        if (person === "player") playerOffsetX = offset;
+        else enemyOffsetX = offset;
+
+        drawBattleArena(encounter);
+        requestAnimationFrame(step);
     }
 
-    step();
+    requestAnimationFrame(step);
 }
 
 //----------Mouse click/ Mouse hover/ player interactions-----------------------
