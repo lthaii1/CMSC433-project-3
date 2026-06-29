@@ -23,6 +23,9 @@ battleNoti.src = "proj3_images/battlenoti.png";
 const slotMach = new Image();
 slotMach.src = "proj3_images/slotMachine.png";
 
+const pullNoti = new Image();
+pullNoti.src = "proj3_images/summon.png";
+
 //after loading screen obtain the player name
 //use player name to query the database
 var playerName = localStorage.getItem("playerName");
@@ -133,7 +136,7 @@ async function loadGame(){
 //this makes sure that all 6 images are load before load game gets called
 //used as a source, images were not loading on load causing blank screen
 //https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded
-const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti, slotMach];
+const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti, slotMach, pullNoti];
 
 Promise.all(allImgs.map(img => new Promise(resolve => { img.onload = resolve; }))).then(() => {
     loadGame();
@@ -264,6 +267,16 @@ const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
 
 
+//slot machine zones
+
+const spawnM = [{x: 740, y: 100, w: 50, h: 60},];
+
+const waterM = [{x: 70, y: 170, w: 70, h: 60},];
+
+const caveM = [{x: 520, y: 200, w: 60, h: 60},];
+
+
+
 
 //uses some to check all collision zones
 //passes x and y cordinate and checks wether it is in the area
@@ -330,21 +343,19 @@ function isColliding(newX, newY){
 }
 
 
+function isSlot(newX, newY){
 
-/*
-function init(){
-
-    if(started == 0){
-        //in future for save and load replace init spawn x and init spawn y
-        ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
-        requestAnimationFrame(init);
+    if(currMap == 1){
+        return inArea(newX,newY,spawnM);
+    }else if (currMap == 2){
+        return inArea(newX,newY,waterM);
+    }else if(currMap ==3){
+        return inArea(newX,newY,caveM);
     }
-    
+
 }
 
-init();
 
-*/
 //made to slow down the sprite
 //updateframe is amount of ticks until spriteframe can be updated
 //baseframe is updated every function call
@@ -419,6 +430,14 @@ function animateDown(){
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
 
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
+    }
+
     if(baseFrame % updateFrame == 0){
     if(frameDown < 3){
         frameDown++;
@@ -481,6 +500,14 @@ function animateUp(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
     
 
@@ -552,6 +579,14 @@ function animateRight(){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
     }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -614,6 +649,14 @@ function animateLeft(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
 
     if(baseFrame % updateFrame == 0){
@@ -749,6 +792,10 @@ document.addEventListener('keydown', function(event){
 
         window.location.href = "battle.html"
 
+
+    }else if(event.key == "f" && isSlot(MoveX,MoveY)){
+
+        window.location.href = ".html"
 
     }
 
