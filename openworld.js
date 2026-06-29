@@ -20,6 +20,11 @@ teleNoti.src = "proj3_images/swimteleport.png";
 const battleNoti = new Image();
 battleNoti.src = "proj3_images/battlenoti.png";
 
+const slotMach = new Image();
+slotMach.src = "proj3_images/slotMachine.png";
+
+const pullNoti = new Image();
+pullNoti.src = "proj3_images/summon.png";
 
 //after loading screen obtain the player name
 //use player name to query the database
@@ -113,6 +118,16 @@ async function loadGame(){
 
     ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
 
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
+
 
 }
 
@@ -121,7 +136,7 @@ async function loadGame(){
 //this makes sure that all 6 images are load before load game gets called
 //used as a source, images were not loading on load causing blank screen
 //https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded
-const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti];
+const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti, slotMach, pullNoti];
 
 Promise.all(allImgs.map(img => new Promise(resolve => { img.onload = resolve; }))).then(() => {
     loadGame();
@@ -148,6 +163,8 @@ const collisionZone = [
     {x: 1420, y: 120, w: 195, h: 70}, //bottom trees
     {x: 690, y: 720, w: 110, h: 40}, //bottom trees
     {x: 940, y: 550, w: 60, h: 200},
+
+    {x: 760, y: 100, w: 20, h: 40}, //slot machine
 
 ];
 
@@ -177,6 +194,9 @@ const collisionZoneWater = [
     {x: 1320, y: 510, w: 50, h: 70}, //top left house
     {x: 1440, y: 510, w: 50, h: 70}, //top left house
 
+
+    {x: 90, y: 170, w: 40, h: 40}, //slot machine
+
 ];
 
 const collisionZoneCave = [
@@ -198,6 +218,8 @@ const collisionZoneCave = [
     {x: 0, y: 0, w: 40, h: 1000},
 
 
+
+    {x: 540, y: 200, w: 20, h: 40}, //slot machine
 ];
 
 //done
@@ -243,6 +265,16 @@ const waterToSpawn = [{x: 300, y: 0, w: 370, h: 130},];
 const waterToCave = [{x: 40, y: 900, w: 150, h: 50},];
 
 const caveToWater = [{x: 1140, y: 200, w: 60, h: 50},];
+
+
+//slot machine zones
+
+const spawnM = [{x: 740, y: 100, w: 50, h: 60},];
+
+const waterM = [{x: 70, y: 170, w: 70, h: 60},];
+
+const caveM = [{x: 520, y: 200, w: 60, h: 60},];
+
 
 
 
@@ -311,21 +343,19 @@ function isColliding(newX, newY){
 }
 
 
+function isSlot(newX, newY){
 
-/*
-function init(){
-
-    if(started == 0){
-        //in future for save and load replace init spawn x and init spawn y
-        ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
-        requestAnimationFrame(init);
+    if(currMap == 1){
+        return inArea(newX,newY,spawnM);
+    }else if (currMap == 2){
+        return inArea(newX,newY,waterM);
+    }else if(currMap ==3){
+        return inArea(newX,newY,caveM);
     }
-    
+
 }
 
-init();
 
-*/
 //made to slow down the sprite
 //updateframe is amount of ticks until spriteframe can be updated
 //baseframe is updated every function call
@@ -373,6 +403,16 @@ function animateDown(){
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
     
     ctx.drawImage(spriteImg,frameDown * 64,0 * 64, 64, 64,MoveX,MoveY,64, 64);
 
@@ -388,6 +428,14 @@ function animateDown(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
 
     if(baseFrame % updateFrame == 0){
@@ -428,6 +476,16 @@ function animateUp(){
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
     
     ctx.drawImage(spriteImg,frameUp * 64,192, 64, 64,MoveX,MoveY,64, 64);
 
@@ -442,6 +500,14 @@ function animateUp(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
     
 
@@ -488,6 +554,16 @@ function animateRight(){
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
     
     ctx.drawImage(spriteImg,frameRight * 64,128, 64, 64,MoveX,MoveY,64, 64);
 
@@ -502,6 +578,14 @@ function animateRight(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
     
 
@@ -541,6 +625,16 @@ function animateLeft(){
 
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
     
     ctx.drawImage(spriteImg,frameLeft * 64,64, 64, 64,MoveX,MoveY,64, 64);
 
@@ -555,6 +649,14 @@ function animateLeft(){
     if(isBattle(MoveX,MoveY)){
         if (currMap == 2)ctx.drawImage(battleNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(battleNoti, 500, 200, 600, 300);
+    }
+
+    if(isSlot(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+        if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
+        if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
+
     }
 
     if(baseFrame % updateFrame == 0){
@@ -574,6 +676,15 @@ function stopAnimate() {
     //clear the sprite
     ctx.clearRect(0,0,bgImg.width,bgImg.height);
     ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+    if(currMap == 1){
+        ctx.drawImage(slotMach, 660, 100, 200, 100);
+    }
+    else if(currMap ==2){
+        ctx.drawImage(slotMach, 10, 170, 200, 100);
+    }
+    else{
+        ctx.drawImage(slotMach, 450, 200, 200, 100);
+    }
     //draw sprite  back with the first sprite animation
     ctx.drawImage(spriteImg,0 ,0,64, 64,MoveX,MoveY,64,64);
     //set action back to zero
@@ -611,6 +722,7 @@ document.addEventListener('keydown', function(event){
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+                ctx.drawImage(slotMach, 10, 170, 200, 100);//slot machince
 
                 MoveX = 400;
                 MoveY = 100;
@@ -625,6 +737,7 @@ document.addEventListener('keydown', function(event){
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+                ctx.drawImage(slotMach, 660, 100, 200, 100);//slot machine 
 
                 MoveX = 1140;
                 MoveY = 620;
@@ -638,6 +751,7 @@ document.addEventListener('keydown', function(event){
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+                ctx.drawImage(slotMach, 450, 200, 200, 100);
 
                 MoveX = 1130;
                 MoveY = 200;
@@ -651,6 +765,7 @@ document.addEventListener('keydown', function(event){
 
                 ctx.clearRect(0,0,bgImg.width,bgImg.height);
                 ctx.drawImage(currBack, 0, 0, bgImg.width, bgImg.height);
+                ctx.drawImage(slotMach, 10, 170, 200, 100);//slot machince
 
                 MoveX = 140;
                 MoveY = 900;
@@ -677,6 +792,10 @@ document.addEventListener('keydown', function(event){
 
         window.location.href = "battle.html"
 
+
+    }else if(event.key == "f" && isSlot(MoveX,MoveY)){
+
+        window.location.href = ".html"
 
     }
 
