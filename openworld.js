@@ -837,8 +837,8 @@ document.addEventListener('keyup', function(event){
 })
 
 
-//saves every 10 seconds
-setInterval(saveGame,10000);
+//saves every 5 seconds
+setInterval(saveGame,5000);
 
 
 //idk what to do, should i save under playername in the databswe???
