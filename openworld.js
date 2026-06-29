@@ -68,6 +68,8 @@ var started = 0;
 //pull from data base, if not entry exist then default
 var currBack = background;
 
+//ensure player cant move until game loaded
+var gameLoaded = false;
 
 //load game from returning from battle
 //load from database
@@ -154,6 +156,8 @@ async function loadGame(){
     else{
         ctx.drawImage(slotMach, 450, 200, 200, 100);
     }
+
+    gameLoaded = true;
 
 
 }
@@ -399,6 +403,8 @@ var action = 0;
 
 function animateDown(){
 
+    if(gameLoaded == false){return;}
+
     //boundries
     if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){ MoveY += dist;}
 
@@ -480,6 +486,8 @@ function animateDown(){
 
 function animateUp(){
 
+    if(gameLoaded == false){return;}
+
     if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){MoveY -= dist;}
 
     if(baseFrame % 40 == 0 &&  isEncounter(MoveX,MoveY)){
@@ -553,6 +561,8 @@ function animateUp(){
 
 
 function animateRight(){
+
+    if(gameLoaded == false){return;}
 
     if(MoveX < 1650 && !isColliding(MoveX + dist, MoveY)){MoveX += dist;}
 
@@ -630,6 +640,8 @@ function animateRight(){
 
 
 function animateLeft(){
+
+    if(gameLoaded == false){return;}
 
     if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){MoveX -= dist;}
 
