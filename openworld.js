@@ -1,6 +1,13 @@
 const bgImg = document.getElementById("backgroundStart");
 const ctx = bgImg.getContext("2d");
 
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, bgImg.width, bgImg.height);
+ctx.fillStyle = "white";
+ctx.font = "40px Arial";
+ctx.fillText("Loading...", bgImg.width/2 - 80, bgImg.height/2);
+
+
 const background = new Image();
 background.src = "proj3_images/openStart.png";
 
