@@ -101,10 +101,31 @@ async function loadGame(){
             }
         } catch(fail){
 
-            MoveX = initSpawnX;
-            MoveY = initSpawnY;
-            currMap = 1;
-            currBack = background;
+            //this is here for retiurning to battle from a fight or encouncter for right now
+            //database has not been implmented so i added this
+
+            if(localStorage.getItem("mapNum") && localStorage.getItem("CordX") && localStorage.getItem("CordY") && localStorage.getItem("returnTo")){
+
+                MoveX = parseFloat(localStorage.getItem("CordX"));
+                MoveY = parseFloat(localStorage.getItem("CordY"));
+                currMap = parseInt(localStorage.getItem("mapNum"));
+
+                if(currMap == 1)currBack = background;
+                if(currMap == 2)currBack = background2;
+                if(currMap == 3)currBack = background3;
+
+                localStorage.removeItem("CordX");
+                localStorage.removeItem("CordY");
+                localStorage.removeItem("mapNum");
+                localStorage.removeItem("returnTo");
+
+            }else{
+
+                MoveX = initSpawnX;
+                MoveY = initSpawnY;
+                currMap = 1;
+                currBack = background;
+            }
 
 
         }
@@ -389,6 +410,10 @@ function animateDown(){
             if(confirm("pokemon enecounter, do you want to battle?")){
 
                 //saveGame();
+                localStorage.setItem("CordX", MoveX);
+                localStorage.setItem("CordY", MoveY);
+                localStorage.setItem("mapNum", currMap);
+                localStorage.setItem("returnTo", 'yes');
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -463,6 +488,10 @@ function animateUp(){
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
                 //saveGame();
+                localStorage.setItem("CordX", MoveX);
+                localStorage.setItem("CordY", MoveY);
+                localStorage.setItem("mapNum", currMap);
+                localStorage.setItem("returnTo", 'yes');
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -539,6 +568,10 @@ function animateRight(){
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
                 //saveGame();
+                localStorage.setItem("CordX", MoveX);
+                localStorage.setItem("CordY", MoveY);
+                localStorage.setItem("mapNum", currMap);
+                localStorage.setItem("returnTo", 'yes');
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -613,6 +646,10 @@ function animateLeft(){
             if(confirm("pokemon enecounter, do you want to battle?")){
                 
                 //saveGame();
+                localStorage.setItem("CordX", MoveX);
+                localStorage.setItem("CordY", MoveY);
+                localStorage.setItem("mapNum", currMap);
+                localStorage.setItem("returnTo", 'yes');
 
                 localStorage.setItem("battleType", 'encounter');
         
@@ -788,6 +825,11 @@ document.addEventListener('keydown', function(event){
         //transition into battle
         //saveGame();
 
+        localStorage.setItem("CordX", MoveX);
+        localStorage.setItem("CordY", MoveY);
+        localStorage.setItem("mapNum", currMap);
+        localStorage.setItem("returnTo", 'yes');
+
         localStorage.setItem("battleType", 'trainer');
 
         window.location.href = "battle.html"
@@ -824,6 +866,7 @@ document.addEventListener('keyup', function(event){
 //idk what to do, should i save under playername in the databswe???
 function saveGame(){
 
+    /*
     fetch("save.php", {
 
         method: "POST",
@@ -840,6 +883,7 @@ function saveGame(){
     .then(response => response.text())
 
     );
+    */
 
 
 }
