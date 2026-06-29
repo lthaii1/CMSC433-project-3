@@ -660,10 +660,11 @@ function damageAnimation(person, callback) {
             callback();
             return;
         }
-
+       
         var phase = Math.floor(elapsed / 50) % 2;
-        if (pase === 0) offset = amplitude;
-        else offset = -amplitude
+        
+        var offset = amplitude;
+        if (phase != 0) offset = -amplitude;
 
         if (person === "player") playerOffsetX = offset;
         else enemyOffsetX = offset;
