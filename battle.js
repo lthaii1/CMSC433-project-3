@@ -12,7 +12,7 @@ var backgrounds = {
     "cave": "proj3_images/caveEncounter.png"
 }
 
-var encounter = "grass";
+var encounter = "";
 
 //store the pokemon loaded in, prevents flickering of pokemon
 var imageCache = {};
@@ -54,7 +54,7 @@ var enemyTeam = [
 
 //stores the moves of the pokemon of both teams 
 var playerMoves = [
-    {name: "tackle", base_power: "50000"},
+    {name: "tackle", base_power: "50"},
     {name: "peck", base_power: "10"},
     {name: "run", base_power: "10"},
     {name: "fly", base_power: "10"}
@@ -139,8 +139,7 @@ function loadImage(src, callback) {
 
 //temp stuff until initValues is ready
 
-battleUI.message = "A Wild Pokemon Appeared!";
-drawBattleArena(encounter);
+initValues();
 
 //used to load in the teams and set any variables
 function initValues() {
@@ -165,8 +164,8 @@ function initValues() {
     else initialMessage = "A Wild "+ enemyTeam[0].name + " Appeared!";
 
     //loads the moves of each pokemon
-    loadMoves(playerTeam[playerIndex], playerMoves, true); 
-    loadMoves(enemyTeam[enemyIndex], enemyMoves);
+    //loadMoves(playerTeam[playerIndex], playerMoves, true); 
+   // loadMoves(enemyTeam[enemyIndex], enemyMoves);
 
    
     //checks what map we are and set the correct battle scene
@@ -941,7 +940,7 @@ function handleCanvasClick(event) {
                 //reset hp of pokemon
 
                 //go to train stuff
-                window.location.href = "training.js";
+                window.location.href = "openworld.html";
             }
     }
 }
