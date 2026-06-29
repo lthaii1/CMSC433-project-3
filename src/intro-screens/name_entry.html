@@ -157,6 +157,21 @@
             // Save active player name
             localStorage.setItem("playerName", name);
 
+            // Maintain list of created player names
+            let savedNames = [];
+            try {
+                const stored = localStorage.getItem("savedNames");
+                if (stored) {
+                    savedNames = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error("Error parsing savedNames:", e);
+            }
+            if (!savedNames.includes(name)) {
+                savedNames.push(name);
+            }
+            localStorage.setItem("savedNames", JSON.stringify(savedNames));
+
             alert("Welcome, " + name + "! Your journey begins!");
         }
     </script>

@@ -181,11 +181,30 @@
     </div>
 
     <script>
+        function getSavedNames() {
+            let savedNames = [];
+            try {
+                const stored = localStorage.getItem("savedNames");
+                if (stored) {
+                    savedNames = JSON.parse(stored);
+                } else {
+                    const player = localStorage.getItem("playerName");
+                    if (player) {
+                        savedNames = [player];
+                        localStorage.setItem("savedNames", JSON.stringify(savedNames));
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading savedNames:", e);
+            }
+            return savedNames;
+        }
+
         function handleStart() {
-            const player = localStorage.getItem("playerName");
+            const savedNames = getSavedNames();
             document.getElementById("start-button").style.display = "none";
             
-            if (player) {
+            if (savedNames.length > 0) {
                 // If there is a save game present, show New Game and Continue Game
                 document.getElementById("menu-options").style.display = "flex";
                 document.getElementById("continue-btn").style.display = "block";
@@ -202,16 +221,17 @@
             const listEl = document.getElementById("save-list");
             listEl.innerHTML = "";
 
-            const player = localStorage.getItem("playerName");
-            if (player) {
+            const savedNames = getSavedNames();
+            savedNames.forEach(name => {
                 const item = document.createElement("div");
                 item.className = "save-item";
-                item.textContent = player;
+                item.textContent = name;
                 item.onclick = function() {
-                    alert("Welcome back, " + player + "! Your journey continues!");
+                    localStorage.setItem("playerName", name);
+                    alert("Welcome back, " + name + "! Your journey continues!");
                 };
                 listEl.appendChild(item);
-            }
+            });
 
             saveListContainer.style.display = "flex";
         }
