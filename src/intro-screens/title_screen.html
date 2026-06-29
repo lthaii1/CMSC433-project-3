@@ -180,30 +180,11 @@
         </div>
     </div>
 
-    <script>
-        function getSavedGames() {
-            let savedGames = [];
-            try {
-                const stored = localStorage.getItem("savedGames");
-                if (stored) {
-                    savedGames = JSON.parse(stored);
-                } else {
-                    const singlePlayer = localStorage.getItem("playerName");
-                    if (singlePlayer) {
-                        savedGames = [singlePlayer];
-                    }
-                }
-            } catch (e) {
-                console.error("Error loading saved games:", e);
-            }
-            return savedGames;
-        }
-
         function handleStart() {
-            const savedGames = getSavedGames();
+            const player = localStorage.getItem("playerName");
             document.getElementById("start-button").style.display = "none";
             
-            if (savedGames.length > 0) {
+            if (player) {
                 // If there is a save game present, show New Game and Continue Game
                 document.getElementById("menu-options").style.display = "flex";
                 document.getElementById("continue-btn").style.display = "block";
@@ -220,17 +201,16 @@
             const listEl = document.getElementById("save-list");
             listEl.innerHTML = "";
 
-            const savedGames = getSavedGames();
-            savedGames.forEach(name => {
+            const player = localStorage.getItem("playerName");
+            if (player) {
                 const item = document.createElement("div");
                 item.className = "save-item";
-                item.textContent = name;
+                item.textContent = player;
                 item.onclick = function() {
-                    localStorage.setItem("playerName", name);
-                    alert("Welcome back, " + name + "! Your journey continues!");
+                    alert("Welcome back, " + player + "! Your journey continues!");
                 };
                 listEl.appendChild(item);
-            });
+            }
 
             saveListContainer.style.display = "flex";
         }
