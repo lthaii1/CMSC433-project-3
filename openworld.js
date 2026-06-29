@@ -91,9 +91,9 @@ async function loadGame(){
 
             }else{
 
-                MoveX = data.x;
-                MoveY = data.y;
-                currMap =data.map;
+                MoveX = parseFloat(data.x);
+                MoveY = parseFloat(data.y);
+                currMap = parseInt(data.map);
                 if(currMap == 1)currBack = background;
                 if(currMap == 2)currBack = background2;
                 if(currMap == 3)currBack = background3;
