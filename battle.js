@@ -1,6 +1,22 @@
 const battleIMG = document.getElementById("battleScreen");
 const ctx = battleIMG.getContext('2d');
 
+//adds background music
+const battleMusic = new Audio("proj3_audio/battle_music.mp3");
+battleMusic.loop = true;      
+battleMusic.volume = 0.3;     
+
+//need so music play, need to click for music to play for the autoplay policy
+var battleMusicStarted = false;
+battleIMG.addEventListener("click", () => {
+    if (!battleMusicStarted) {
+        battleMusic.play();
+        battleMusicStarted = true;
+    }
+});
+
+
+
 //the pokeball images to show amount of pokemon you have left
 const pokeballImg = new Image();
 pokeballImg.src = "proj3_images/pokeball.png";
@@ -184,7 +200,7 @@ function initValues() {
             encounter = "grass";
             break;
     }
-    
+   
     //draws the scene   
     drawBattleArena(encounter); 
 }
@@ -455,7 +471,7 @@ function drawSwitchBox() {
                 ctx.fillStyle = "red";
                 ctx.fillText("(Fainted)",  pos.x + switchW/2, pos.y + 3*(switchH/4));
             }else {
-                ctx.fillText(`HP: ${p.hp}/${p.maxHp}`, pos.x + switchW/2, pos.y + 3*(switchH/4));
+                ctx.fillText(`HP: ${p.hp}/${p.maxHP}`, pos.x + switchW/2, pos.y + 3*(switchH/4));
             }
         }
         
@@ -885,7 +901,9 @@ function handleCanvasClick(event) {
 
     if (target === "run") {
         //reset hp
-        
+        battleMusic.pause();
+        battleMusic.currentTime = 0;   
+
         window.location.href = "openworld.html";
     }
     //when you press the switch button
@@ -931,6 +949,8 @@ function handleCanvasClick(event) {
     if (target === "end") {
          if(playerDead) {
                 //reset hp of pokemon
+                battleMusic.pause();
+                battleMusic.currentTime = 0;   
 
                 //go back 
                 window.location.href = "openworld.html";
@@ -938,6 +958,8 @@ function handleCanvasClick(event) {
 
             if (enemyDead) {
                 //reset hp of pokemon
+                battleMusic.pause();
+                battleMusic.currentTime = 0; 
 
                 //go to train stuff
                 window.location.href = "openworld.html";
