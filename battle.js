@@ -320,7 +320,7 @@ function drawBox() {
         } else if (battleUI.mode === "moves") {
             drawMoveBox();
         } else if (battleUI.mode === "items") {
-            //drawItemsBox(); // optional later
+            drawItemBox();
         }else if (battleUI.mode === "switch") {
             drawSwitchBox();
         }
@@ -342,12 +342,9 @@ function drawTextBox() {
     var centerX = boxX + boxW/2;
     var centerY = boxY + boxH/2;
     ctx.fillText(battleUI.message, centerX, centerY);
-    //the click to advance instruction
-    //ctx.font = "25px Arial";
-    //ctx.fillStyle = " dark grey";
-    //ctx.fillText("Click to Advance",1500, 920 );
 }
 
+//shows your moves and options to use an item or switch pokemon
 function drawMoveBox() {
     ctx.font = "28px Arial";
     ctx.textAlign = "center";
@@ -365,6 +362,7 @@ function drawMoveBox() {
         ctx.fillRect(pos.x, pos.y, btnW, btnH);
         ctx.strokeStyle = "black";
         ctx.strokeRect(pos.x, pos.y, btnW, btnH);
+        
         //only adds the names for the moves that exits
         if(i < battleUI.moves.length) {
             var move = battleUI.moves[i];
@@ -388,6 +386,7 @@ function drawMoveBox() {
     //switch button (top right)
     var switchX = 1350;
     var switchY = 820;
+    
     //highlights the button
     if (hoverTarget === "switch") ctx.fillStyle = "#ffff99";
     else ctx.fillStyle = "white";
@@ -443,6 +442,10 @@ function drawSwitchBox() {
     }
 }
 
+function drawItemBox() {
+
+}
+
 //------- All the functions related battling-------------------
 
 //calculates the damge the given move does to the pokemon
@@ -481,6 +484,12 @@ function checkTeamDead(team) {
     return true; // all Pokémon are fainted
 }
 
+//reset the pokemon hp after the player or emeny ius deaD
+function resetHP(team) {
+
+}
+
+
 //makes the player attack with correct damage, animations, and text
 function playerAttack( attacker, defender, selectedMove,  callback) {
     attackAnimation("player", () => {
@@ -495,22 +504,23 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
                         battleUI.message =  defender.name + " fainted!";
                         drawBattleArena(encounter);
                         
-                        //checks if the trainer or wild pokemon is dead
-                        if (checkTeamDead(enemyTeam)) {
-                            enemyDead = true;
-                            battleUI.message = "You Won!!!!!";
-                            battleUI.mode = "end";
+                        setTimeout(()=> {
+                             //checks if the trainer or wild pokemon is dead
+                            if (checkTeamDead(enemyTeam)) {
+                                enemyDead = true;
+                                battleUI.message = "You Won!!!!!";
+                                battleUI.mode = "end";
+                                drawBattleArena(encounter);
+                                return;
+                            }
+                            //trainer uses their next pokemon
+                            enemyIndex++;
+                            //loadMoves(enemyTeam[enemyIndex], enemyMoves);
+                            battleUI.message = "Enemy sent out " + enemyTeam[enemyIndex].name + "!";
+                            battleUI.mode = "intro";
                             drawBattleArena(encounter);
                             return;
-                        }
-                        //trainer uses their next pokemon
-                        enemyIndex++;
-                        //loadMoves(enemyTeam[enemyIndex], enemyMoves);
-                        battleUI.message = "Enemy sent out " + enemyTeam[enemyIndex].name + "!";
-                        battleUI.mode = "intro";
-                        drawBattleArena(encounter);
-                        return;
-
+                            },1000)
                     }
                     callback();
                 })
@@ -748,6 +758,22 @@ function getHoverTarget(mouseX, mouseY) {
     }
     //needs to be implemented
     if (battleUI.mode === "item") {}
+
+    
+    if (battleUI.mode === "end") {
+        var boxX = 50, boxY = 800, boxW = 1600, boxH = 180;
+
+        if (
+            mouseX >= boxX &&
+            mouseX <= boxX + boxW &&
+            mouseY >= boxY &&
+            mouseY <= boxY + boxH
+        ) {
+            return "end";
+        }
+        return null;
+    }
+
     if (battleUI.mode === "switch") {
         for (let i = 0; i < 6; i++) {
             var pos = switchPositions[i];
@@ -806,7 +832,6 @@ function handleCanvasClick(event) {
     if (!target) return; 
 
     //for the intro/textbox
-    //do not make it clickable if your in battlemode
     if (target === "textbox") {
         battleUI.mode = "moves";
         drawBattleArena(encounter);
@@ -839,5 +864,18 @@ function handleCanvasClick(event) {
         drawBattleArena(encounter);
         return;
     }
-   
+
+    if (target === "end") {
+         if(playerDead) {
+                //reset hp of pokemon
+
+                //go back 
+            }
+
+            if (enemyDead) {
+                //reset hp of pokemon
+
+                //go to train stuff
+            }
+    }
 }
