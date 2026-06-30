@@ -83,7 +83,7 @@ async function loadGame(){
 
 
         try{
-            const response = await fetch("load.php......");
+            const response = await fetch("load.php?playerName=${playerName}");
             const data = await response.json();
 
             //if database cordinates are still at spawn then its a newplayer
@@ -91,7 +91,7 @@ async function loadGame(){
             //x cord to 335
             //y to 100
             //map to 1
-            if(data.x == 335 || data.y == 100 || data.map == 1){
+            if(data.coord_x == 335 || data.coord_y == 100 || data.current_map == 1){
 
                 MoveX = initSpawnX;
                 MoveY = initSpawnY;
@@ -100,9 +100,9 @@ async function loadGame(){
 
             }else{
 
-                MoveX = parseFloat(data.x);
-                MoveY = parseFloat(data.y);
-                currMap = parseInt(data.map);
+                MoveX = parseFloat(data.coord_x);
+                MoveY = parseFloat(data.coord_y);
+                currMap = parseInt(data.current_map);
                 if(currMap == 1)currBack = background;
                 if(currMap == 2)currBack = background2;
                 if(currMap == 3)currBack = background3;
@@ -862,7 +862,7 @@ function saveGame(){
     localStorage.setItem("CordY", MoveY);
     localStorage.setItem("mapNum", currMap);
 
-    /*
+    
     fetch("save.php", {
 
         method: "POST",
@@ -870,16 +870,16 @@ function saveGame(){
 
         body: JSON.stringify({
             playerName: playerName,
-            MoveX: MoveX,
-            MoveY: MoveY,
-            currMap: currMap,
+            x: MoveX,
+            y: MoveY,
+            map: currMap,
         })
     }
 
     .then(response => response.text())
 
     );
-    */
+    
 
 
 }
