@@ -11,6 +11,7 @@ USE pokemon_db;
 -- TABLE 1: pokemon
 -- Base pokemon data.
 -- image_path uses local files: proj3_images/1st Generation/
+-- rarity added for the gambling/gacha system (common, rare, legendary)
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS pokemon (
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
     defense     INT NOT NULL,
     speed       INT NOT NULL,
     image_path  VARCHAR(255) NOT NULL,
+    rarity      VARCHAR(15) NOT NULL DEFAULT 'common',
     PRIMARY KEY (id)
 );
 
@@ -59,7 +61,8 @@ CREATE TABLE IF NOT EXISTS pokemon_attacks (
 -- TABLE 4: players
 -- Stores player info and game state.
 -- coord_x, coord_y, current_map defaults set by Leo.
--- currency added for gambling system.
+-- currency added for gambling system, default 50 so new players
+-- can pull from the gacha at least once.
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS players (
@@ -68,7 +71,7 @@ CREATE TABLE IF NOT EXISTS players (
     current_map INT NOT NULL DEFAULT 1,
     coord_x     FLOAT NOT NULL DEFAULT 335,
     coord_y     FLOAT NOT NULL DEFAULT 100,
-    currency    INT NOT NULL DEFAULT 0,
+    currency    INT NOT NULL DEFAULT 50,
     wins        INT NOT NULL DEFAULT 0,
     losses      INT NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
@@ -96,45 +99,48 @@ CREATE TABLE IF NOT EXISTS player_pokemon (
 -- ============================================================
 -- SEED DATA: 36 randomly selected Gen 1 Pokemon
 -- max_hp and hp start as the same value
+-- rarity: legendary = Articuno, Zapdos, Dragonite (very low pull odds)
+--         rare = strong/high stat-total pokemon (mid odds)
+--         common = everything else (default, most common pulls)
 -- ============================================================
 
-INSERT INTO pokemon (id, name, type1, type2, max_hp, hp, attack, defense, speed, image_path) VALUES
-(  9, 'Blastoise',  'Water',    NULL,       79,  79,  83, 100,  78, 'proj3_images/1st Generation/009Blastoise.png'),
-( 14, 'Kakuna',     'Bug',      'Poison',   45,  45,  25,  50,  35, 'proj3_images/1st Generation/014Kakuna.png'),
-( 15, 'Beedrill',   'Bug',      'Poison',   65,  65,  90,  40,  75, 'proj3_images/1st Generation/015Beedrill.png'),
-( 24, 'Arbok',      'Poison',   NULL,       60,  60,  85,  69,  80, 'proj3_images/1st Generation/024Arbok.png'),
-( 27, 'Sandshrew',  'Ground',   NULL,       50,  50,  75,  85,  40, 'proj3_images/1st Generation/027Sandshrew.png'),
-( 39, 'Jigglypuff', 'Normal',   'Fairy',   115, 115,  45,  20,  20, 'proj3_images/1st Generation/039Jigglypuff.png'),
-( 45, 'Vileplume',  'Grass',    'Poison',   75,  75,  80,  85,  50, 'proj3_images/1st Generation/045Vileplume.png'),
-( 48, 'Venonat',    'Bug',      'Poison',   60,  60,  55,  50,  45, 'proj3_images/1st Generation/048Venonat.png'),
-( 50, 'Diglett',    'Ground',   NULL,       10,  10,  55,  25,  95, 'proj3_images/1st Generation/050Diglett.png'),
-( 56, 'Mankey',     'Fighting', NULL,       40,  40,  80,  35,  70, 'proj3_images/1st Generation/056Mankey.png'),
-( 59, 'Arcanine',   'Fire',     NULL,       90,  90, 110,  80,  95, 'proj3_images/1st Generation/059Arcanine.png'),
-( 60, 'Poliwag',    'Water',    NULL,       40,  40,  50,  40,  90, 'proj3_images/1st Generation/060Poliwag.png'),
-( 63, 'Abra',       'Psychic',  NULL,       25,  25,  20,  15,  90, 'proj3_images/1st Generation/063Abra.png'),
-( 64, 'Kadabra',    'Psychic',  NULL,       40,  40,  35,  30, 105, 'proj3_images/1st Generation/064Kadabra.png'),
-( 65, 'Alakazam',   'Psychic',  NULL,       55,  55,  50,  45, 120, 'proj3_images/1st Generation/065Alakazam.png'),
-( 68, 'Machamp',    'Fighting', NULL,       90,  90, 130,  80,  55, 'proj3_images/1st Generation/068Machamp.png'),
-( 69, 'Bellsprout', 'Grass',    'Poison',   50,  50,  75,  35,  40, 'proj3_images/1st Generation/069Bellsprout.png'),
-( 72, 'Tentacool',  'Water',    'Poison',   40,  40,  40,  35,  70, 'proj3_images/1st Generation/072Tentacool.png'),
-( 77, 'Ponyta',     'Fire',     NULL,       50,  50,  85,  55,  90, 'proj3_images/1st Generation/077Ponyta.png'),
-( 90, 'Shellder',   'Water',    NULL,       30,  30,  65, 100,  40, 'proj3_images/1st Generation/090Shellder.png'),
-( 92, 'Gastly',     'Ghost',    'Poison',   30,  30,  35,  30,  80, 'proj3_images/1st Generation/092Gastly.png'),
-( 97, 'Hypno',      'Psychic',  NULL,       85,  85,  73,  70,  67, 'proj3_images/1st Generation/097Hypno.png'),
-(101, 'Electrode',  'Electric', NULL,       60,  60,  50,  70, 140, 'proj3_images/1st Generation/101Electrode.png'),
-(103, 'Exeggutor',  'Grass',    'Psychic',  95,  95,  95,  85,  55, 'proj3_images/1st Generation/103Exeggutor.png'),
-(104, 'Cubone',     'Ground',   NULL,       50,  50,  50,  95,  35, 'proj3_images/1st Generation/104Cubone.png'),
-(105, 'Marowak',    'Ground',   NULL,       60,  60,  80, 110,  45, 'proj3_images/1st Generation/105Marowak.png'),
-(109, 'Koffing',    'Poison',   NULL,       40,  40,  65,  95,  35, 'proj3_images/1st Generation/109Koffing.png'),
-(113, 'Chansey',    'Normal',   NULL,      250, 250,   5,   5,  50, 'proj3_images/1st Generation/113Chansey.png'),
-(114, 'Tangela',    'Grass',    NULL,       65,  65,  55, 115,  60, 'proj3_images/1st Generation/114Tangela.png'),
-(132, 'Ditto',      'Normal',   NULL,       48,  48,  48,  48,  48, 'proj3_images/1st Generation/132Ditto.png'),
-(135, 'Jolteon',    'Electric', NULL,       65,  65,  65,  60, 130, 'proj3_images/1st Generation/135Jolteon.png'),
-(139, 'Omastar',    'Rock',     'Water',    70,  70,  60, 125,  55, 'proj3_images/1st Generation/139Omastar.png'),
-(141, 'Kabutops',   'Rock',     'Water',    60,  60, 115, 105,  80, 'proj3_images/1st Generation/141Kabutops.png'),
-(144, 'Articuno',   'Ice',      'Flying',   90,  90,  85, 100,  85, 'proj3_images/1st Generation/144Articuno.png'),
-(145, 'Zapdos',     'Electric', 'Flying',   90,  90,  90,  85, 100, 'proj3_images/1st Generation/145Zapdos.png'),
-(149, 'Dragonite',  'Dragon',   'Flying',   91,  91, 134,  95,  80, 'proj3_images/1st Generation/149Dragonite.png');
+INSERT INTO pokemon (id, name, type1, type2, max_hp, hp, attack, defense, speed, image_path, rarity) VALUES
+(  9, 'Blastoise',  'Water',    NULL,       79,  79,  83, 100,  78, 'proj3_images/1st Generation/009Blastoise.png',  'rare'),
+( 14, 'Kakuna',     'Bug',      'Poison',   45,  45,  25,  50,  35, 'proj3_images/1st Generation/014Kakuna.png',     'common'),
+( 15, 'Beedrill',   'Bug',      'Poison',   65,  65,  90,  40,  75, 'proj3_images/1st Generation/015Beedrill.png',   'common'),
+( 24, 'Arbok',      'Poison',   NULL,       60,  60,  85,  69,  80, 'proj3_images/1st Generation/024Arbok.png',      'common'),
+( 27, 'Sandshrew',  'Ground',   NULL,       50,  50,  75,  85,  40, 'proj3_images/1st Generation/027Sandshrew.png',  'common'),
+( 39, 'Jigglypuff', 'Normal',   'Fairy',   115, 115,  45,  20,  20, 'proj3_images/1st Generation/039Jigglypuff.png', 'common'),
+( 45, 'Vileplume',  'Grass',    'Poison',   75,  75,  80,  85,  50, 'proj3_images/1st Generation/045Vileplume.png',  'common'),
+( 48, 'Venonat',    'Bug',      'Poison',   60,  60,  55,  50,  45, 'proj3_images/1st Generation/048Venonat.png',    'common'),
+( 50, 'Diglett',    'Ground',   NULL,       10,  10,  55,  25,  95, 'proj3_images/1st Generation/050Diglett.png',    'common'),
+( 56, 'Mankey',     'Fighting', NULL,       40,  40,  80,  35,  70, 'proj3_images/1st Generation/056Mankey.png',     'common'),
+( 59, 'Arcanine',   'Fire',     NULL,       90,  90, 110,  80,  95, 'proj3_images/1st Generation/059Arcanine.png',   'rare'),
+( 60, 'Poliwag',    'Water',    NULL,       40,  40,  50,  40,  90, 'proj3_images/1st Generation/060Poliwag.png',    'common'),
+( 63, 'Abra',       'Psychic',  NULL,       25,  25,  20,  15,  90, 'proj3_images/1st Generation/063Abra.png',       'common'),
+( 64, 'Kadabra',    'Psychic',  NULL,       40,  40,  35,  30, 105, 'proj3_images/1st Generation/064Kadabra.png',    'common'),
+( 65, 'Alakazam',   'Psychic',  NULL,       55,  55,  50,  45, 120, 'proj3_images/1st Generation/065Alakazam.png',   'rare'),
+( 68, 'Machamp',    'Fighting', NULL,       90,  90, 130,  80,  55, 'proj3_images/1st Generation/068Machamp.png',    'rare'),
+( 69, 'Bellsprout', 'Grass',    'Poison',   50,  50,  75,  35,  40, 'proj3_images/1st Generation/069Bellsprout.png', 'common'),
+( 72, 'Tentacool',  'Water',    'Poison',   40,  40,  40,  35,  70, 'proj3_images/1st Generation/072Tentacool.png',  'common'),
+( 77, 'Ponyta',     'Fire',     NULL,       50,  50,  85,  55,  90, 'proj3_images/1st Generation/077Ponyta.png',     'common'),
+( 90, 'Shellder',   'Water',    NULL,       30,  30,  65, 100,  40, 'proj3_images/1st Generation/090Shellder.png',   'common'),
+( 92, 'Gastly',     'Ghost',    'Poison',   30,  30,  35,  30,  80, 'proj3_images/1st Generation/092Gastly.png',     'common'),
+( 97, 'Hypno',      'Psychic',  NULL,       85,  85,  73,  70,  67, 'proj3_images/1st Generation/097Hypno.png',      'common'),
+(101, 'Electrode',  'Electric', NULL,       60,  60,  50,  70, 140, 'proj3_images/1st Generation/101Electrode.png',  'common'),
+(103, 'Exeggutor',  'Grass',    'Psychic',  95,  95,  95,  85,  55, 'proj3_images/1st Generation/103Exeggutor.png',  'rare'),
+(104, 'Cubone',     'Ground',   NULL,       50,  50,  50,  95,  35, 'proj3_images/1st Generation/104Cubone.png',     'common'),
+(105, 'Marowak',    'Ground',   NULL,       60,  60,  80, 110,  45, 'proj3_images/1st Generation/105Marowak.png',    'rare'),
+(109, 'Koffing',    'Poison',   NULL,       40,  40,  65,  95,  35, 'proj3_images/1st Generation/109Koffing.png',    'common'),
+(113, 'Chansey',    'Normal',   NULL,      250, 250,   5,   5,  50, 'proj3_images/1st Generation/113Chansey.png',    'common'),
+(114, 'Tangela',    'Grass',    NULL,       65,  65,  55, 115,  60, 'proj3_images/1st Generation/114Tangela.png',    'common'),
+(132, 'Ditto',      'Normal',   NULL,       48,  48,  48,  48,  48, 'proj3_images/1st Generation/132Ditto.png',      'common'),
+(135, 'Jolteon',    'Electric', NULL,       65,  65,  65,  60, 130, 'proj3_images/1st Generation/135Jolteon.png',    'rare'),
+(139, 'Omastar',    'Rock',     'Water',    70,  70,  60, 125,  55, 'proj3_images/1st Generation/139Omastar.png',    'rare'),
+(141, 'Kabutops',   'Rock',     'Water',    60,  60, 115, 105,  80, 'proj3_images/1st Generation/141Kabutops.png',   'rare'),
+(144, 'Articuno',   'Ice',      'Flying',   90,  90,  85, 100,  85, 'proj3_images/1st Generation/144Articuno.png',   'legendary'),
+(145, 'Zapdos',     'Electric', 'Flying',   90,  90,  90,  85, 100, 'proj3_images/1st Generation/145Zapdos.png',     'legendary'),
+(149, 'Dragonite',  'Dragon',   'Flying',   91,  91, 134,  95,  80, 'proj3_images/1st Generation/149Dragonite.png',  'legendary');
 
 -- ============================================================
 -- SEED DATA: attacks
