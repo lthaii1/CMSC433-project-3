@@ -169,6 +169,15 @@
             savedNames.push(name);
             localStorage.setItem("savedNames", JSON.stringify(savedNames));
 
+            fetch("insert.php", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+
+                body: JSON.stringify({
+                    playerName: name,
+                })
+                });
+
             window.location.href = '../../openworld.html';
         }
     </script>
