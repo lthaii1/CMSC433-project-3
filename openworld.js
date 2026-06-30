@@ -9,29 +9,29 @@ ctx.fillText("Loading...", bgImg.width/2 - 80, bgImg.height/2);
 
 
 const background = new Image();
-background.src = "proj3_images/openStart.png";
+background.src = "imgs/proj3_images/openStart.png";
 
 const background2 = new Image();
-background2.src = "proj3_images/watermap.png";
+background2.src = "imgs/proj3_images/watermap.png";
 
 const background3 = new Image();
-background3.src = "proj3_images/cavemap.png";
+background3.src = "imgs/proj3_images/cavemap.png";
 
 const spriteImg = new Image();
-spriteImg.src = "proj3_images/sprite.png";
+spriteImg.src = "imgs/proj3_images/sprite.png";
 //SPRITES IMG SIZE IS 64
 
 const teleNoti = new Image();
-teleNoti.src = "proj3_images/swimteleport.png";
+teleNoti.src = "imgs/proj3_images/swimteleport.png";
 
 const battleNoti = new Image();
-battleNoti.src = "proj3_images/battlenoti.png";
+battleNoti.src = "imgs/proj3_images/battlenoti.png";
 
 const slotMach = new Image();
-slotMach.src = "proj3_images/slotMachine.png";
+slotMach.src = "imgs/proj3_images/slotMachine.png";
 
 const pullNoti = new Image();
-pullNoti.src = "proj3_images/summon.png";
+pullNoti.src = "imgs/proj3_images/summon.png";
 
 //after loading screen obtain the player name
 //use player name to query the database
@@ -97,6 +97,7 @@ async function loadGame(){
                 MoveY = initSpawnY;
                 currMap = 1;
                 currBack = background;
+         //       console.log("new game");
 
             }else{
 
@@ -106,6 +107,7 @@ async function loadGame(){
                 if(currMap == 1)currBack = background;
                 if(currMap == 2)currBack = background2;
                 if(currMap == 3)currBack = background3;
+         //       console.log("save game");
 
             }
         } catch(fail){
@@ -134,6 +136,8 @@ async function loadGame(){
                 currMap = 1;
                 currBack = background;
             }
+
+     //       console.log("database not connected");
 
 
         }
