@@ -83,7 +83,7 @@ async function loadGame(){
 
 
         try{
-            const response = await fetch("load.php?playerName=${playerName}");
+            const response = await fetch(`load.php?playerName=${playerName}`);
             const data = await response.json();
 
             //if database cordinates are still at spawn then its a newplayer
@@ -852,7 +852,7 @@ document.addEventListener('keyup', function(event){
 
 
 //saves every 5 seconds
-setInterval(saveGame,5000);
+setInterval(saveGame,10000);
 
 
 //idk what to do, should i save under playername in the databswe???
