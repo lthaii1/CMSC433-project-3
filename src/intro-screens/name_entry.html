@@ -154,8 +154,6 @@
                 alert("Please enter a name!");
                 return;
             }
-            // Save active player name
-            localStorage.setItem("playerName", name);
 
             // Maintain list of created player names
             let savedNames = [];
@@ -167,9 +165,15 @@
             } catch (e) {
                 console.error("Error parsing savedNames:", e);
             }
-            if (!savedNames.includes(name)) {
-                savedNames.push(name);
+
+            if (savedNames.includes(name)) {
+                alert("Name already taken, select a new one");
+                return;
             }
+
+            // Save active player name
+            localStorage.setItem("playerName", name);
+            savedNames.push(name);
             localStorage.setItem("savedNames", JSON.stringify(savedNames));
 
             alert("Welcome, " + name + "! Your journey begins!");
