@@ -86,18 +86,20 @@ async function loadGame(){
             const response = await fetch(`load.php?playerName=${playerName}`);
             const data = await response.json();
 
+            console.log("loaded data:", data);
+
             //if database cordinates are still at spawn then its a newplayer
             //database table for player has to set default 
             //x cord to 335
             //y to 100
             //map to 1
-            if(data.coord_x == 335 || data.coord_y == 100 || data.current_map == 1){
+            if(data.coord_x == 335 && data.coord_y == 100 && data.current_map == 1){
 
                 MoveX = initSpawnX;
                 MoveY = initSpawnY;
                 currMap = 1;
                 currBack = background;
-         //       console.log("new game");
+                console.log("new game");
 
             }else{
 
@@ -107,7 +109,7 @@ async function loadGame(){
                 if(currMap == 1)currBack = background;
                 if(currMap == 2)currBack = background2;
                 if(currMap == 3)currBack = background3;
-         //       console.log("save game");
+                console.log("save game");
 
             }
         } catch(fail){
@@ -137,7 +139,7 @@ async function loadGame(){
                 currBack = background;
             }
 
-     //       console.log("database not connected");
+            console.log("database not connected");
 
 
         }
