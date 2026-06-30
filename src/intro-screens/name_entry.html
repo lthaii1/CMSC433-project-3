@@ -132,21 +132,14 @@
         </div>
 
         <div class="btn-group">
-            <button class="btn" onclick="window.location.href='character_select.html'">Back</button>
+            <button class="btn" onclick="window.location.href='title_screen.html'">Back</button>
             <button class="btn confirm-btn" onclick="confirmName()">Confirm</button>
         </div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const gender = params.get('gender') || 'Male';
-        
         const spriteEl = document.getElementById("sprite-preview");
-        if (gender === 'Female') {
-            spriteEl.src = "https://archives.bulbagarden.net/media/upload/0/00/Spr_DP_Dawn.png";
-        } else {
-            spriteEl.src = "https://archives.bulbagarden.net/media/upload/9/9d/Spr_DP_Lucas.png";
-        }
+        spriteEl.src = "https://archives.bulbagarden.net/media/upload/c/ca/Spr_FRLG_Red.png";
 
         function confirmName() {
             const name = document.getElementById("name-input").value.trim();
