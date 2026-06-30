@@ -8,11 +8,17 @@ battleMusic.volume = 0.3;
 
 //need so music play, need to click for music to play for the autoplay policy
 var battleMusicStarted = false;
-battleIMG.addEventListener("click", () => {
-    if (!battleMusicStarted) {
-        battleMusic.play();
-        battleMusicStarted = true;
+document.addEventListener("keydown", function(event) {
+    if(event.key === "m") {
+        if (!battleMusicStarted){
+            battleMusic.play();
+            battleMusicStarted = true;
+        }else {
+            battleMusic.pause();
+            battleMusicStarted = false;
+        }
     }
+    
 });
 
 
@@ -48,46 +54,18 @@ var enemyDead = false;
 
 
 //used to store pokemons of each team 
-var playerTeam = [
-    {name: "pok1", hp: 15, maxHP: 15 ,  attack: 10, def:90, speed: 60,
-         type1:"", type2:"", img:"proj3_images/1st Generation/126Magmar.png",
-        move1: "", move2: "", move3: "", move4: ""},
-    {name:"poke2", hp: 0},
-    {name: "poke3", hp: 0, img: "proj3_images/1st Generation/006Charizard.png"},
-    {name: "poke4", hp: 0, img: "proj3_images/1st Generation/143Snorlax.png"},
-    {name: "poke5", hp: 15,  maxHP:15,attack: 10, def:90, speed: 60,
-         type1:"", type2:"", img: "proj3_images/1st Generation/099Kingler.png"}
+var playerTeam = [];
+var enemyTeam = [];
 
-];
-var enemyTeam = [
-    {name: "poke6", hp: 15, maxHP: 15, attack: 10, def:50, speed: 70,
-         type1:"", type2:"", img:"proj3_images/1st Generation/108Lickitung.png",
-        move1: "", move2: "", move3: "", move4: ""},
-    {name: "poke7", hp: 20, maxHP: 20, attack: 10, def:90, speed: 90,
-        type1:"", type2:"", img:"proj3_images/1st Generation/006Charizard.png",
-    move1: "", move2: "", move3: "", move4: ""},
-];
-
-//stores the moves of the pokemon of both teams 
-var playerMoves = [
-    {name: "tackle", base_power: "50"},
-    {name: "peck", base_power: "10"},
-    {name: "run", base_power: "10"},
-    {name: "fly", base_power: "10"}
-];
-var enemyMoves = [
-    {name: "tackle", base_power: "10"},
-    {name: "peck", base_power: "10"},
-    {name: "run", base_power: "10"},
-    {name: "fly", base_power: "10"}
-];
-
+//stores the moves of each pokemon for each team
+var playerMoves = [];
+var enemyMoves = [];
 
 //text box information
 var battleUI = {
-    mode: "intro",   // intro, moves, items, battle, switch, end
-    message: "A Wild Pokemon Appeared!",
-    moves: ["tackle", "peck", "run", "fly"]
+    mode: "intro",   // intro, moves, battle, switch, end
+    message: "",
+    moves: []
 };
 
 //postion and dimensions of the box
@@ -153,36 +131,84 @@ function loadImage(src, callback) {
     img.src = src;
 }
 
-//temp stuff until initValues is ready
+
 
 initValues();
 
 //used to load in the teams and set any variables
-function initValues() {
+async function initValues() {
+    const playerName = "test"; //localStorage.getItem("playerName");
+    const battleType =  false;//localStorage.getItem("battleType");
+    
     //load in player pokemon 
+    var teamRes = await fetch("load_team.php?name=" + playerName);
+    var teamData = await teamRes.json();
+    playerTeam = teamData.map(p => ({
+        id: p.id,
+        name: p.name,
+        hp: p.current_hp,
+        maxHP: p.max_hp,
+        attack: p.cur_attack,
+        def: p.cur_defense,
+        speed: p.cur_speed,
+        type1: p.type1,
+        type2: p.type2,
+        img: p.image_path
+    }));
 
     //checks if we are battling a trainer
-    var battleType = localStorage.getItem("battleType");
     if (battleType == "trainer") trainer = true;
 
     //loads in enemy pokemon including trainers/wild pokemon
     if (!trainer) {
-        var num = Math.floor(Math.random() * 36) + 1;
-        //use that number to pick the pokemon with that id from database
+        var wildRes = await fetch("load_random.php");
+        var wild = await wildRes.json();
+
+        enemyTeam = [{
+            id: wild.id,
+            name: wild.name,
+            hp: wild.hp,
+            maxHP: wild.max_hp,
+            attack: wild.attack,
+            def: wild.defense,
+            speed: wild.speed,
+            type1: wild.type1,
+            type2: wild.type2,
+            img: wild.image_path
+        }];
+
     }
     else {
         //load in the trainer
+        var trainerRes = await fetch("load_team.php?name=Joe");
+        var trainerData = await trainerRes.json();
+
+        enemyTeam = trainerData.map(p => ({
+            id: p.id,
+            name: p.name,
+            hp: p.hp,
+            maxHP: p.max_hp,
+            attack: p.cur_attack,
+            def: p.cur_defense,
+            speed: p.cur_speed,
+            type1: p.type1,
+            type2: p.type2,
+            img: p.image_path
+        }));
     }
 
     var initialMessage = "";
     //set local varibles
     if (trainer) initialMessage = "Trainer Joe Appeared!";
-    else initialMessage = "A Wild "+ enemyTeam[0].name + " Appeared!";
+    else initialMessage = "A Wild "+ enemyTeam[enemyIndex].name + " Appeared!";
+    battleUI.message = initialMessage;
 
-    //loads the moves of each pokemon
-    //loadMoves(playerTeam[playerIndex], playerMoves, true); 
-   // loadMoves(enemyTeam[enemyIndex], enemyMoves);
+    //loads the moves of each team
+    await loadMoves(playerTeam, playerMoves); 
+    await loadMoves(enemyTeam, enemyMoves);
 
+    //loads the moves to the ui
+    loadMoveNames();
    
     //checks what map we are and set the correct battle scene
     var currMap = localStorage.getItem("currMap");
@@ -206,19 +232,29 @@ function initValues() {
 }
 
 //loads the moves of the given pokemon
-function loadMoves(pokemon, teamMoves, player = false) { 
-    if (player) battleUI.moves = [];
-    
-    var moves = [pokemon.move1, pokemon.move2, pokemon.move3, pokemon.move4 ];
+async function loadMoves(team, teamMoves) { 
+    for (var i = 0; i < team.length; i++) {
+        var p = team[i];
+        
+        var res = await fetch("load_moves.php?id=" + p.id);
+        var moves = await res.json(); 
 
-    for (var m of moves) {
-        if (m) {
-            teamMoves.push(m);
-            //needs to be updated to store only the moves name
-            //not the move object
-            if (player) battleUI.moves.push(m);
-        }
+        teamMoves[i] = moves.map(m => ({
+            name: m.name,
+            type: m.type,
+            base_power: m.power
+        }))
     }
+}
+
+function loadMoveNames() {
+    battleUI.moves = [];
+    var moves = playerMoves[playerIndex];
+
+    for( var i = 0; i < moves.length; i++) {
+        battleUI.moves.push(moves[i].name);
+    }
+
 }
 
 //draws the battle screen with all its componites 
@@ -478,10 +514,6 @@ function drawSwitchBox() {
     }
 }
 
-function drawItemBox() {
-
-}
-
 //------- All the functions related battling-------------------
 
 //calculates the damge the given move does to the pokemon
@@ -506,13 +538,13 @@ function calculateDamage(attacker, defender, move) {
     // Random variation (85%–100%)
     var random = (Math.random() * 0.15) + 0.85;
 
-    return Math.floor(base *stab *type1 *type2 *random);
+    return Math.floor(base *stab *random);
 }
 
 function getTypeEffectiveness(moveType, defenderType) {
     var multiplier = 1;
     if (defenderType) {
-        if (typeChart[moveType] && typeChart[moveType][defenderType1]) {
+        if (typeChart[moveType] && typeChart[moveType][defenderType]) {
             multiplier *= typeChart[moveType][defenderType1];
         }
     }
@@ -527,7 +559,7 @@ function applyDamage(targetTeam, index, dmg) {
 
 //returns a number between 0 and the number of moves the enemy has
 function enemyChooseMove() {
-    return Math.floor(Math.random() * enemyMoves.length);
+    return Math.floor(Math.random() * enemyMoves[enemyIndex].length);
 }
 
 //sees if all the pokemon within a team is dead
@@ -539,12 +571,6 @@ function checkTeamDead(team) {
     }
     return true; //all Pokémon are dead
 }
-
-//reset the pokemon hp after the player or emeny ius deaD
-function resetHP(team) {
-
-}
-
 
 //makes the player attack with correct damage, animations, and text
 function playerAttack( attacker, defender, selectedMove,  callback) {
@@ -570,7 +596,6 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
                             }
                             //trainer uses their next pokemon
                             enemyIndex++;
-                            //loadMoves(enemyTeam[enemyIndex], enemyMoves);
                             battleUI.message = "Enemy sent out " + enemyTeam[enemyIndex].name + "!";
                             battleUI.mode = "intro";
                             drawBattleArena(encounter);
@@ -620,8 +645,8 @@ function enemyAttack (attacker, defender, selectedMove,  callback) {
 function turnManager(playerMoveIndex) {
     var player = playerTeam[playerIndex];
     var enemy = enemyTeam[enemyIndex];
-    var playMove = playerMoves[playerMoveIndex];
-    var enemyMove = enemyMoves[enemyChooseMove()];
+    var playMove = playerMoves[playerIndex][playerMoveIndex];
+    var enemyMove = enemyMoves[enemyIndex][enemyChooseMove()];
 
     var playerFirst = player.speed >= enemy.speed;
 
@@ -872,7 +897,7 @@ function handleMouseMove(event) {
     drawBattleArena(encounter); // redraw to show highlight
 }
 
-function handleCanvasClick(event) {
+async function handleCanvasClick(event) {
    
     var rect = battleIMG.getBoundingClientRect();
     var scaleX = battleIMG.width / rect.width;
@@ -915,7 +940,8 @@ function handleCanvasClick(event) {
     }
     if (target.type === "poke") {
         playerIndex =  target.index;
-       //loadMoves(playerTeam[playerIndex], playerMoves, true);
+        
+        loadMoveNames();
 
         //switching due to fainting
         if(!switchTurn) {
@@ -948,7 +974,7 @@ function handleCanvasClick(event) {
 
     if (target === "end") {
          if(playerDead) {
-                //reset hp of pokemon
+                
                 battleMusic.pause();
                 battleMusic.currentTime = 0;   
 
@@ -957,7 +983,7 @@ function handleCanvasClick(event) {
             }
 
             if (enemyDead) {
-                //reset hp of pokemon
+                
                 battleMusic.pause();
                 battleMusic.currentTime = 0; 
 
