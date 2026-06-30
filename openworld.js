@@ -1,6 +1,8 @@
 const bgImg = document.getElementById("backgroundStart");
 const ctx = bgImg.getContext("2d");
 
+
+//loading screen due to all images needing to load up first
 ctx.fillStyle = "black";
 ctx.fillRect(0, 0, bgImg.width, bgImg.height);
 ctx.fillStyle = "white";
@@ -81,8 +83,8 @@ async function loadGame(){
         localStorage.removeItem("battleType");
     }
 
-
         try{
+            //php file sends over database info
             const response = await fetch(`load.php?playerName=${playerName}`);
             const data = await response.json();
 
@@ -409,7 +411,7 @@ var action = 0;
 
 function animateDown(){
 
-    if(gameLoaded == false){return;}
+    //if(gameLoaded == false){return;}
 
     //boundries
     if(MoveY < bgImg.height-45 && !isColliding(MoveX, MoveY + dist)){ MoveY += dist;}
@@ -420,10 +422,6 @@ function animateDown(){
         if(Math.random() < .01){
             action = 0;
             stopAnimate();
-
-            //if yes then save local storage
-            //save battle type as encounter
-            //send to battle screen
             
             if(confirm("pokemon enecounter, do you want to battle?")){
 
@@ -492,7 +490,7 @@ function animateDown(){
 
 function animateUp(){
 
-    if(gameLoaded == false){return;}
+    //if(gameLoaded == false){return;}
 
     if(MoveY > 60 && !isColliding(MoveX, MoveY - dist)){MoveY -= dist;}
 
@@ -568,7 +566,7 @@ function animateUp(){
 
 function animateRight(){
 
-    if(gameLoaded == false){return;}
+    //if(gameLoaded == false){return;}
 
     if(MoveX < 1650 && !isColliding(MoveX + dist, MoveY)){MoveX += dist;}
 
@@ -647,7 +645,7 @@ function animateRight(){
 
 function animateLeft(){
 
-    if(gameLoaded == false){return;}
+    //if(gameLoaded == false){return;}
 
     if(MoveX > -15 && !isColliding(MoveX - dist, MoveY)){MoveX -= dist;}
 
@@ -743,15 +741,19 @@ document.addEventListener('keydown', function(event){
     started = 1;
 
     if(event.key == "w"){
+        if(gameLoaded == false){return;}
         animateUp();
         action =1;
     }else if(event.key == "s"){
+        if(gameLoaded == false){return;}
         animateDown();
         action =1;
     }else if(event.key == "a"){
+        if(gameLoaded == false){return;}
         animateLeft();
         action =1;
     }else if(event.key == "d"){
+        if(gameLoaded == false){return;}
         animateRight();
         action =1;
     }else if(event.key == "e"){
@@ -863,18 +865,19 @@ document.addEventListener('keyup', function(event){
 })
 
 
-//saves every 5 seconds
+//saves every 10 seconds
 setInterval(saveGame,10000);
 
 
 //idk what to do, should i save under playername in the databswe???
 function saveGame(){
 
+    //in the case the database doesnt work
     localStorage.setItem("CordX", MoveX);
     localStorage.setItem("CordY", MoveY);
     localStorage.setItem("mapNum", currMap);
 
-    
+    //uploading the player variables to the database
     fetch("save.php", {
 
         method: "POST",
