@@ -228,7 +228,7 @@
                 item.textContent = name;
                 item.onclick = function() {
                     localStorage.setItem("playerName", name);
-                    alert("Welcome back, " + name + "! Your journey continues!");
+                    window.location.href = '../../openworld.html';
                 };
                 listEl.appendChild(item);
             });
