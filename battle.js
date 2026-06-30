@@ -6,6 +6,9 @@ const battleMusic = new Audio("proj3_audio/battle_music.mp3");
 battleMusic.loop = true;      
 battleMusic.volume = 0.3;     
 
+const volumeStep = 0.05;
+
+
 //need so music play, need to click for music to play for the autoplay policy
 var battleMusicStarted = false;
 document.addEventListener("keydown", function(event) {
@@ -17,6 +20,12 @@ document.addEventListener("keydown", function(event) {
             battleMusic.pause();
             battleMusicStarted = false;
         }
+    } 
+    if (event.key === "ArrowUp") {
+        battleMusic.volume = Math.min(1, battleMusic.volume + volumeStep);
+    }
+    if (event.key === "ArrowDown") {
+        battleMusic.volume = Math.max(0, battleMusic.volume - volumeStep);
     }
     
 });
@@ -29,9 +38,9 @@ pokeballImg.src = "proj3_images/pokeball.png";
 
 //the battle feilds that are avaliable 
 var backgrounds = {
-    "grass": "proj3_images/grassEncounter.png",
-    "water" : "proj3_images/waterEncounter.png",
-    "cave": "proj3_images/caveEncounter.png"
+    "grass": "imgs/proj3_images/grassEncounter.png",
+    "water" : "imgs/proj3_images/waterEncounter.png",
+    "cave": "imgs/proj3_images/caveEncounter.png"
 }
 
 var encounter = "";
@@ -141,8 +150,8 @@ async function initValues() {
     const battleType =  false;//localStorage.getItem("battleType");
     
     //load in player pokemon 
-    var teamRes = await fetch("load_team.php?name=" + playerName);
-    var teamData = await teamRes.json();
+    const teamRes = await fetch("load_team.php?name=" + playerName);
+    const teamData = await teamRes.json();
     playerTeam = teamData.map(p => ({
         id: p.id,
         name: p.name,
@@ -161,8 +170,8 @@ async function initValues() {
 
     //loads in enemy pokemon including trainers/wild pokemon
     if (!trainer) {
-        var wildRes = await fetch("load_random.php");
-        var wild = await wildRes.json();
+        const wildRes = await fetch("load_random.php");
+        const wild = await wildRes.json();
 
         enemyTeam = [{
             id: wild.id,
@@ -180,8 +189,8 @@ async function initValues() {
     }
     else {
         //load in the trainer
-        var trainerRes = await fetch("load_team.php?name=Joe");
-        var trainerData = await trainerRes.json();
+        const trainerRes = await fetch("load_team.php?name=Joe");
+        const trainerData = await trainerRes.json();
 
         enemyTeam = trainerData.map(p => ({
             id: p.id,
@@ -210,21 +219,15 @@ async function initValues() {
     //loads the moves to the ui
     loadMoveNames();
    
+    const response = await fetch(`load.php?playerName=${playerName}`);
+    const data = await response.json();
     //checks what map we are and set the correct battle scene
-    var currMap = localStorage.getItem("currMap");
+    var currMap = parseInt(data.current_map);
     switch(currMap) {
-        case 1:
-            encounter = "grass";
-            break;
-        case 2:
-            encounter = "water";
-            break;
-        case 3:
-            encounter = "cave";
-            break;
-        default:
-            encounter = "grass";
-            break;
+        case 1: encounter = "grass"; break;
+        case 2: encounter = "water"; break;
+        case 3: encounter = "cave"; break;
+        default: encounter = "grass"; break;
     }
    
     //draws the scene   
@@ -538,17 +541,17 @@ function calculateDamage(attacker, defender, move) {
     // Random variation (85%–100%)
     var random = (Math.random() * 0.15) + 0.85;
 
-    return Math.floor(base *stab *random);
+    return Math.floor(base *stab *type1 *type2 *random);
 }
 
 function getTypeEffectiveness(moveType, defenderType) {
-    var multiplier = 1;
-    if (defenderType) {
+    if (!defenderType) return 1;
+    defenderType = defenderType.toLowerCase();
+
         if (typeChart[moveType] && typeChart[moveType][defenderType]) {
-            multiplier *= typeChart[moveType][defenderType1];
+            return typeChart[moveType][defenderType];
         }
-    }
-    return multiplier;
+    return 1;
 }
 
 //reduces the hp of the pokemon taking damage
@@ -584,6 +587,8 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
                         battleUI.mode = "battle";
                         battleUI.message =  defender.name + " fainted!";
                         drawBattleArena(encounter);
+                        //increase state of poekmon that won
+                        increaseStats(attacker);
                         
                         setTimeout(()=> {
                              //checks if the trainer or wild pokemon is dead
@@ -978,11 +983,11 @@ async function handleCanvasClick(event) {
                 battleMusic.pause();
                 battleMusic.currentTime = 0;   
 
-                //go back 
                 window.location.href = "openworld.html";
             }
 
             if (enemyDead) {
+                //increase stats of all the pokemon 
                 
                 battleMusic.pause();
                 battleMusic.currentTime = 0; 
