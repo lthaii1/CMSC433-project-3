@@ -837,6 +837,12 @@ document.addEventListener('keydown', function(event){
 
         window.location.href = ".html"
 
+    }else if(event.key == "Escape"){
+
+        saveGame();
+
+        window.location.href = "src/intro-screens/title_screen.html"
+
     }
 
 })
