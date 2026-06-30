@@ -48,7 +48,7 @@ var playerName = localStorage.getItem("playerName");
 //used to move around the canvas
 var MoveX =335;
 var MoveY =100;
-var dist = .2;
+var dist = .25;
 
 const initSpawnX =335;
 const initSpawnY =100;
