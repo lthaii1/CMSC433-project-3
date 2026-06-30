@@ -46,7 +46,7 @@ var playerName = localStorage.getItem("playerName");
 //used to move around the canvas
 var MoveX =335;
 var MoveY =100;
-var dist = .3;
+var dist = .2;
 
 const initSpawnX =335;
 const initSpawnY =100;
@@ -835,7 +835,7 @@ document.addEventListener('keydown', function(event){
 
         saveGame();
 
-        window.location.href = ".html"
+        window.location.href = "gamble.html"
 
     }else if(event.key == "Escape"){
 
