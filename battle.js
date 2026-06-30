@@ -1,6 +1,22 @@
 const battleIMG = document.getElementById("battleScreen");
 const ctx = battleIMG.getContext('2d');
 
+//adds background music
+const battleMusic = new Audio("proj3_audio/battle_music.mp3");
+battleMusic.loop = true;      
+battleMusic.volume = 0.3;     
+
+//need so music play, need to click for music to play for the autoplay policy
+var battleMusicStarted = false;
+battleIMG.addEventListener("click", () => {
+    if (!battleMusicStarted) {
+        battleMusic.play();
+        battleMusicStarted = true;
+    }
+});
+
+
+
 //the pokeball images to show amount of pokemon you have left
 const pokeballImg = new Image();
 pokeballImg.src = "proj3_images/pokeball.png";
@@ -11,6 +27,8 @@ var backgrounds = {
     "water" : "proj3_images/waterEncounter.png",
     "cave": "proj3_images/caveEncounter.png"
 }
+
+var encounter = "";
 
 //store the pokemon loaded in, prevents flickering of pokemon
 var imageCache = {};
@@ -23,9 +41,11 @@ var hoverTarget = false;
 //used to store which pokemon is out and the battle situation
 var playerIndex = 0;
 var enemyIndex = 0;
-var trainer = true;
+var trainer = false;
+var switchTurn = false; //used to see if you are switching manually
 var playerDead = false;
 var enemyDead = false;
+
 
 //used to store pokemons of each team 
 var playerTeam = [
@@ -33,9 +53,10 @@ var playerTeam = [
          type1:"", type2:"", img:"proj3_images/1st Generation/126Magmar.png",
         move1: "", move2: "", move3: "", move4: ""},
     {name:"poke2", hp: 0},
-    {name: "poke3", hp: 20, img: "proj3_images/1st Generation/006Charizard.png"},
-    {name: "poke4", hp: 60, img: "proj3_images/1st Generation/143Snorlax.png"},
-    {name: "poke5", hp: 90, img: "proj3_images/1st Generation/099Kingler.png"}
+    {name: "poke3", hp: 0, img: "proj3_images/1st Generation/006Charizard.png"},
+    {name: "poke4", hp: 0, img: "proj3_images/1st Generation/143Snorlax.png"},
+    {name: "poke5", hp: 15,  maxHP:15,attack: 10, def:90, speed: 60,
+         type1:"", type2:"", img: "proj3_images/1st Generation/099Kingler.png"}
 
 ];
 var enemyTeam = [
@@ -49,7 +70,7 @@ var enemyTeam = [
 
 //stores the moves of the pokemon of both teams 
 var playerMoves = [
-    {name: "tackle", base_power: "50000"},
+    {name: "tackle", base_power: "50"},
     {name: "peck", base_power: "10"},
     {name: "run", base_power: "10"},
     {name: "fly", base_power: "10"}
@@ -99,6 +120,23 @@ var switchPositions = [
     { x: 1125, y: 897 }   // row 2 col 3
 ];
 
+const typeChart = {
+    normal:   { rock: 0.5, ghost: 0},
+    fire:     { fire: 0.5, water: 0.5, grass: 2, ice: 2, bug: 2, rock: 0.5, dragon: 0.5},
+    water:    { fire: 2, water: 0.5, grass: 0.5, ground: 2, rock: 2, dragon: 0.5 },
+    electric: { water: 2, electric: 0.5, grass: 0.5, ground: 0, flying: 2, dragon: 0.5 },
+    grass:    { fire: 0.5, water: 2, grass: 0.5, poison: 0.5, ground: 2, flying: 0.5, bug: 0.5, rock: 2, dragon: 0.5 },
+    ice:      { fire: 0.5, water: 0.5, grass: 2, ground: 2, flying: 2, dragon: 2},
+    fighting: { normal: 2, ice: 2, rock: 2, steel: 2, poison: 0.5, flying: 0.5, psychic: 0.5, bug: 0.5, ghost: 0 },
+    poison:   { grass: 2, poison: 0.5, ground: 0.5, rock: 0.5, ghost: 0.5},
+    ground:   { fire: 2, electric: 2, poison: 2, rock: 2, steel: 2, grass: 0.5, bug: 0.5, flying: 0 },
+    flying:   { grass: 2, fighting: 2, bug: 2, electric: 0.5, rock: 0.5, steel: 0.5 },
+    psychic:  { fighting: 2, poison: 2, psychic: 0.5, steel: 0. },
+    bug:      { grass: 2, psychic: 2, fire: 0.5, fighting: 0.5, poison: 0.5, flying: 0.5, ghost: 0.5},
+    rock:     { fire: 2, ice: 2, flying: 2, bug: 2, fighting: 0.5, ground: 0.5},
+    ghost:    { psychic: 2, ghost: 2, normal: 0 },
+    dragon:   { dragon: 2}
+};
 
 //loades the image only once, only used for pokemon to stop flicker
 function loadImage(src, callback) {
@@ -116,9 +154,8 @@ function loadImage(src, callback) {
 }
 
 //temp stuff until initValues is ready
-var encounter = "grass";
-battleUI.message = "A Wild Pokemon Appeared!";
-drawBattleArena(encounter);
+
+initValues();
 
 //used to load in the teams and set any variables
 function initValues() {
@@ -143,13 +180,12 @@ function initValues() {
     else initialMessage = "A Wild "+ enemyTeam[0].name + " Appeared!";
 
     //loads the moves of each pokemon
-    loadMoves(playerTeam[playerIndex], playerMoves, true); 
-    loadMoves(enemyTeam[enemyIndex], enemyMoves);
+    //loadMoves(playerTeam[playerIndex], playerMoves, true); 
+   // loadMoves(enemyTeam[enemyIndex], enemyMoves);
 
    
     //checks what map we are and set the correct battle scene
     var currMap = localStorage.getItem("currMap");
-    
     switch(currMap) {
         case 1:
             encounter = "grass";
@@ -164,7 +200,7 @@ function initValues() {
             encounter = "grass";
             break;
     }
-    
+   
     //draws the scene   
     drawBattleArena(encounter); 
 }
@@ -319,9 +355,7 @@ function drawBox() {
             drawTextBox();
         } else if (battleUI.mode === "moves") {
             drawMoveBox();
-        } else if (battleUI.mode === "items") {
-            drawItemBox();
-        }else if (battleUI.mode === "switch") {
+        } else if (battleUI.mode === "switch") {
             drawSwitchBox();
         }
 }
@@ -329,8 +363,9 @@ function drawBox() {
 //puts text in the text box
 function drawTextBox() {
     //highlights the box 
-    if (hoverTarget === "textbox") ctx.fillStyle = "#ffffcc";
-    else ctx.fillStyle = "white";
+    if (hoverTarget === "textbox" || hoverTarget === "end") { 
+        ctx.fillStyle = "#ffffcc";
+    }else ctx.fillStyle = "white";
 
     ctx.fillRect(50, 800, 1600, 180);
 
@@ -370,18 +405,19 @@ function drawMoveBox() {
             ctx.fillText(move, pos.x + btnW / 2, pos.y + btnH / 2);
         }
     }
-    //item button (bottom right)
-    var itemX = 1350;
-    var itemY = 900;
+
+    //run button (bottom right)
+    var runX = 1350;
+    var runY = 900;
     
-    //hilghts the button
-    if (hoverTarget === "items") ctx.fillStyle = "#ffff99";
+    //highlights the button
+    if (hoverTarget === "run") ctx.fillStyle = "#ffff99";
     else ctx.fillStyle = "white";
-    ctx.fillRect(itemX, itemY, btnW/2, btnH);
+    ctx.fillRect(runX, runY, btnW/2, btnH);
     ctx.strokeStyle = "black";
-    ctx.strokeRect(itemX, itemY,  btnW/2, btnH);
+    ctx.strokeRect(runX, runY, btnW/2, btnH);
     ctx.fillStyle = "black";
-    ctx.fillText("Items", itemX + (btnW/2)/2, itemY + btnH/2);
+    ctx.fillText("Run", runX + (btnW/2)/2, runY + btnH/2);
 
     //switch button (top right)
     var switchX = 1350;
@@ -435,7 +471,7 @@ function drawSwitchBox() {
                 ctx.fillStyle = "red";
                 ctx.fillText("(Fainted)",  pos.x + switchW/2, pos.y + 3*(switchH/4));
             }else {
-                ctx.fillText(`HP: ${p.hp}/${p.maxHp}`, pos.x + switchW/2, pos.y + 3*(switchH/4));
+                ctx.fillText(`HP: ${p.hp}/${p.maxHP}`, pos.x + switchW/2, pos.y + 3*(switchH/4));
             }
         }
         
@@ -449,18 +485,38 @@ function drawItemBox() {
 //------- All the functions related battling-------------------
 
 //calculates the damge the given move does to the pokemon
-function calculateDamage(attacker, defender, movePower = 40) {
+function calculateDamage(attacker, defender, move) {
     // Basic Pokémon-style damage formula
-    var level = 5; // fixed level for now
+    var level = 10; // fixed level for now
     var attack = attacker.attack;
     var defense = defender.def;
+    var movePower = move.base_power;
+
+    var stab = 1;
+    if(move.type === attacker.type1 || move.type === attacker.type2)  {
+        stab = 1.5;
+    }
+
+    if(move.special != null) attack = attack *3;
 
     var base = (((2 * level / 5 + 2) * movePower * (attack / defense)) / 50) + 2;
 
+    var type1 = getTypeEffectiveness(move.type, defender.type1);
+    var type2 = getTypeEffectiveness(move.type, defender.type2);
     // Random variation (85%–100%)
     var random = (Math.random() * 0.15) + 0.85;
 
-    return Math.floor(base * random);
+    return Math.floor(base *stab *type1 *type2 *random);
+}
+
+function getTypeEffectiveness(moveType, defenderType) {
+    var multiplier = 1;
+    if (defenderType) {
+        if (typeChart[moveType] && typeChart[moveType][defenderType1]) {
+            multiplier *= typeChart[moveType][defenderType1];
+        }
+    }
+    return multiplier;
 }
 
 //reduces the hp of the pokemon taking damage
@@ -478,10 +534,10 @@ function enemyChooseMove() {
 function checkTeamDead(team) {
     for (let i = 0; i < team.length; i++) {
         if (team[i].hp > 0) {
-            return false; // at least one Pokémon is still alive
+            return false; //at least one Pokémon is still alive
         }
     }
-    return true; // all Pokémon are fainted
+    return true; //all Pokémon are dead
 }
 
 //reset the pokemon hp after the player or emeny ius deaD
@@ -493,14 +549,13 @@ function resetHP(team) {
 //makes the player attack with correct damage, animations, and text
 function playerAttack( attacker, defender, selectedMove,  callback) {
     attackAnimation("player", () => {
-                var power =  selectedMove.base_power;
-                var dmg = calculateDamage(attacker, defender, power);
+                var dmg = calculateDamage(attacker, defender, selectedMove);
                 applyDamage(enemyTeam, enemyIndex, dmg);
                 
                 damageAnimation("enemy", () =>{
                     
                     if(defender.hp <= 0) {
-                        battleUI.mode = "intro";
+                        battleUI.mode = "battle";
                         battleUI.message =  defender.name + " fainted!";
                         drawBattleArena(encounter);
                         
@@ -520,7 +575,7 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
                             battleUI.mode = "intro";
                             drawBattleArena(encounter);
                             return;
-                            },1000)
+                            },200)
                     }
                     callback();
                 })
@@ -530,26 +585,31 @@ function playerAttack( attacker, defender, selectedMove,  callback) {
 //makes the enemy attack with correct damage, animations, and text
 function enemyAttack (attacker, defender, selectedMove,  callback) {
     attackAnimation("enemy", () => {
-                    var power = selectedMove.base_power;
-                    var dmg = calculateDamage(attacker, defender, power);
+                    var dmg = calculateDamage(attacker, defender, selectedMove);
                     applyDamage(playerTeam, playerIndex, dmg);
 
                     damageAnimation("player", () =>{
                         if(defender.hp <= 0) {
-                            battleUI.mode = "intro";
+                            battleUI.mode = "battle";
                             battleUI.message = defender.name + " fainted!";
                             drawBattleArena(encounter);
-                            if (checkTeamDead(playerTeam)) {
-                                playerDead = true;
-                                battleUI.message = "You died!!";
-                                battleUI.mode = "end";
+                            
+                            setTimeout(()=> {
+                                if (checkTeamDead(playerTeam)) {
+                                    playerDead = true;
+                                    battleUI.message = "You died!!";
+                                    battleUI.mode = "end";
+                                    drawBattleArena(encounter);
+                                    return;
+                                }
+                                //player goes to the pokemon selection screen
+                                battleUI.mode = "switch";
+                                battleUI.message = "Choose a Pokemon"
                                 drawBattleArena(encounter);
-                            }
-                            //player goes to the pokemon selection screen
-                            battleUI.mode = "switch";
-                            battleUI.message = "Choose a Pokemon"
-                            drawBattleArena(encounter);
-                            return;
+                                return;
+                            }, 500)
+                           
+                           
                         }
                         callback();
                     })
@@ -573,14 +633,14 @@ function turnManager(playerMoveIndex) {
         playerAttack(player, enemy, playMove, () => {
             //Only attack if enemy survived
             if (!enemyDead && enemy.hp > 0) {
-               // setTimeout ( ()=> {
-                    battleUI.message =  enemy.name + " used " +enemyMove.name;
+               
+                battleUI.message =  enemy.name + " used " +enemyMove.name;
+                drawBattleArena(encounter);
+                enemyAttack(enemy, player, enemyMove, () => {
+                    battleUI.mode = "intro";
                     drawBattleArena(encounter);
-                    enemyAttack(enemy, player, enemyMove, () => {
-                        battleUI.mode = "intro";
-                        drawBattleArena(encounter);
-                    });
-               // }, 600)
+                });
+            
                 
             } else {
                 battleUI.mo = "intro";
@@ -595,14 +655,14 @@ function turnManager(playerMoveIndex) {
         enemyAttack(enemy, player, enemyMove, () => {
             // Only attack if player survived
             if (!playerDead && player.hp > 0) {
-                //setTimeout(() => {
-                    battleUI.message = "You used " + playMove.name + "!";
-                    drawBattleArena(encounter);
-                    playerAttack(player, enemy, playMove, () => {
-                        battleUI.mode = "intro";
-                        drawBattleArena(encounter); 
-                    });
-               // },500)   
+               
+                battleUI.message = "You used " + playMove.name + "!";
+                drawBattleArena(encounter);
+                playerAttack(player, enemy, playMove, () => {
+                    battleUI.mode = "intro";
+                    drawBattleArena(encounter); 
+                });
+            
             }else {
                 battleUI.mode = "intro";
                 drawBattleArena(encounter);
@@ -728,7 +788,7 @@ function getHoverTarget(mouseX, mouseY) {
             }
         }
 
-        //item button area
+        //run button area
         var itemX = 1350;
         var itemY = 900;
         var itemW = btnW/2;
@@ -739,7 +799,7 @@ function getHoverTarget(mouseX, mouseY) {
             mouseY >= itemY &&
             mouseY <= itemY + itemH
         ) {
-            return "items";
+            return "run";
         }
 
         //switch button area
@@ -756,9 +816,6 @@ function getHoverTarget(mouseX, mouseY) {
             return "switch";
         }
     }
-    //needs to be implemented
-    if (battleUI.mode === "item") {}
-
     
     if (battleUI.mode === "end") {
         var boxX = 50, boxY = 800, boxW = 1600, boxH = 180;
@@ -839,43 +896,73 @@ function handleCanvasClick(event) {
     }
     //for the move that was clicked
     if (target.type === "move") {
-        
         turnManager(target.index);
     }
 
-    //for the item button
-    if (target === "items") {
-        battleUI.mode = "intro";
-        battleUI.message = "You opened your bag.";
-        drawBattleArena(encounter);
-        return;
+    if (target === "run") {
+        //reset hp
+        battleMusic.pause();
+        battleMusic.currentTime = 0;   
+
+        window.location.href = "openworld.html";
     }
     //when you press the switch button
     if (target === "switch") {
+        switchTurn = true;
         battleUI.mode = "switch";
         drawBattleArena(encounter);
         return;
     }
     if (target.type === "poke") {
         playerIndex =  target.index;
-        loadMoves(playerTeam[playerIndex], playerMoves, true);
+       //loadMoves(playerTeam[playerIndex], playerMoves, true);
 
-        battleUI.mode = "moves"
+        //switching due to fainting
+        if(!switchTurn) {
+            battleUI.mode = "moves";
+            drawBattleArena(encounter);
+            return;
+        }
+
+        switchTurn = false;
+        battleUI.mode = "battle";
+        battleUI.message = "You swiched to " + playerTeam[playerIndex].name + "!";
         drawBattleArena(encounter);
+
+        var enemy = enemyTeam[enemyIndex];
+        var player = playerTeam[playerIndex];
+        var enemyMove = enemyMoves[enemyChooseMove()];
+
+        setTimeout(() => {
+            battleUI.message = enemy.name + " used " + enemyMove.name + "!";
+            drawBattleArena(encounter);
+
+            enemyAttack(enemy, player, enemyMove, () => {
+                battleUI.mode = "intro";
+                drawBattleArena(encounter);
+            });
+        }, 600);
+        
         return;
     }
 
     if (target === "end") {
          if(playerDead) {
                 //reset hp of pokemon
+                battleMusic.pause();
+                battleMusic.currentTime = 0;   
 
                 //go back 
+                window.location.href = "openworld.html";
             }
 
             if (enemyDead) {
                 //reset hp of pokemon
+                battleMusic.pause();
+                battleMusic.currentTime = 0; 
 
                 //go to train stuff
+                window.location.href = "openworld.html";
             }
     }
 }

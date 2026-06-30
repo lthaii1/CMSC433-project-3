@@ -5,10 +5,12 @@ require_once "database.php";
 //pull players name
 //cords
 //map
+$playerName = $_GET["playerName"];
 
-$sql = "SELECT * FROM users WHERE  
-VALUES ('$playerName', '$cordX', '$cordY', '$mapNum')";
+$sql = "SELECT * FROM players WHERE name =:playerName";
 
-$pdo->exec($sql);
+$pdo->query($sql);
+
+$save = $stmt->fetch(PDO::FETCH_ASSOC);
 
 ?>
