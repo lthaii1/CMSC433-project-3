@@ -874,11 +874,7 @@ function saveGame(){
             y: MoveY,
             map: currMap,
         })
-    }
-
-    .then(response => response.text())
-
-    );
+    });
     
 
 
