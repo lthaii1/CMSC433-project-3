@@ -34,7 +34,7 @@ document.addEventListener("keydown", function(event) {
 
 //the pokeball images to show amount of pokemon you have left
 const pokeballImg = new Image();
-pokeballImg.src = "proj3_images/pokeball.png";
+pokeballImg.src = "imgs/proj3_images/pokeball.png";
 
 //the battle feilds that are avaliable 
 var backgrounds = {
@@ -63,6 +63,8 @@ var enemyOffsetX = 0;
 var hoverTarget = false;
 
 //used to store which pokemon is out and the battle situation
+const playerName = localStorage.getItem("playerName");
+const battleType = localStorage.getItem("battleType");
 var playerIndex = 0;
 var enemyIndex = 0;
 var trainer = false;
@@ -155,25 +157,25 @@ initValues();
 
 //used to load in the teams and set any variables
 async function initValues() {
-    const playerName = "test"; //localStorage.getItem("playerName");
-    const battleType =  false;//localStorage.getItem("battleType");
-    
     //load in player pokemon 
     const teamRes = await fetch("load_team.php?name=" + playerName);
     const teamData = await teamRes.json();
+    console.log("teamData from PHP:", teamData);
+
+
     playerTeam = teamData.map(p => ({
         id: p.id,
         name: p.name,
         hp: p.current_hp,
         maxHP: p.max_hp,
-        attack: p.cur_attack,
-        def: p.cur_defense,
-        speed: p.cur_speed,
+        attack: p.attack,
+        def: p.defense,
+        speed: p.speed,
         type1: p.type1,
         type2: p.type2,
         img: p.image_path
     }));
-
+    console.log("playerTeam mapped:", playerTeam);
     //checks if we are battling a trainer
     if (battleType == "trainer") trainer = true;
 
@@ -198,18 +200,18 @@ async function initValues() {
     }
     else {
         //load in the trainer
-        var trainer = weightedTrainers[Math.floor(Math.random() * weightedTrainers.length)];
-        const trainerRes = await fetch("load_team.php?name=" + trainer);
+        var trainerName = weightedTrainer[Math.floor(Math.random() * weightedTrainer.length)];
+        const trainerRes = await fetch("load_team.php?name=" + trainerName);
         const trainerData = await trainerRes.json();
 
         enemyTeam = trainerData.map(p => ({
             id: p.id,
             name: p.name,
-            hp: p.hp,
+            hp: p.current_hp,
             maxHP: p.max_hp,
-            attack: p.cur_attack,
-            def: p.cur_defense,
-            speed: p.cur_speed,
+            attack: p.attack,
+            def: p.defense,
+            speed: p.speed,
             type1: p.type1,
             type2: p.type2,
             img: p.image_path
@@ -218,7 +220,7 @@ async function initValues() {
 
     var initialMessage = "";
     //set local varibles
-    if (trainer) initialMessage = "Trainer Joe Appeared!";
+    if (trainer) initialMessage = "Trainer " + trainerName +  " Appeared!";
     else initialMessage = "A Wild "+ enemyTeam[enemyIndex].name + " Appeared!";
     battleUI.message = initialMessage;
 
@@ -972,7 +974,7 @@ async function handleCanvasClick(event) {
 
         var enemy = enemyTeam[enemyIndex];
         var player = playerTeam[playerIndex];
-        var enemyMove = enemyMoves[enemyChooseMove()];
+        var enemyMove = enemyMoves[enemyIndex][enemyChooseMove()];
 
         setTimeout(() => {
             battleUI.message = enemy.name + " used " + enemyMove.name + "!";
