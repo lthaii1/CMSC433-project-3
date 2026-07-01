@@ -335,35 +335,30 @@ INSERT INTO players (id, name) VALUES
 (5, 'Ash'), 
 (6, 'Red');
 
-INSERT INTO player_pokemon (pokemon_id, player_id, current_hp, max_hp, cur_attack, cur_defense, cur_speed)
+INSERT INTO player_pokemon (pokemon_id, player_id, current_hp, attack, defense, speed) 
 VALUES
---pokemon for trainer 1, all grass types
-(69, 1, 50, 50, 75, 35, 40), --Bellsprout
-(114, 1, 65, 65, 55, 115, 60), --Tangela
-(103, 1, 95, 95, 95, 85, 55), --Exeggutor
-(45, 1, 75, 75, 80, 85, 50), --Vileplume
-
---pokemon for trainer 2,  easy trainer
-(27, 2, 50, 50, 75, 85, 40), --Sandshrew
-
---pokemon for trainer 3,  easy trainer
-(50, 3, 10, 10, 55, 25, 95), --Diglett
-
---pokemon for trainer 4,  easy trainer
-(39, 4, 115, 115, 45, 20, 20), --Jigglypuff
-
---pokemon for triner 5, medium level
-(63, 5, 25, 25, 20, 15, 90),  --Abra
-(97, 5, 85, 85, 73, 70, 67),  --Hypno
-(104, 5, 50,50, 50, 95, 35),  --Cubone
-(135, 5, 65, 65, 65, 60, 130),  --Jolteon
-
---pokemon for trainer 6, hardest level
-(24, 6, 60, 60, 85, 69, 80),  --Arbok
-(14, 6, 45, 45, 25, 50, 35),  --Kakuna
-(144, 6, 90, 90, 85, 100, 85),  --Articuno
-(9, 6, 79, 79, 83, 100, 78),    --Blatoise
-(65, 6, 55, 55, 50, 45, 120), --Alakazam
-(135, 6, 65, 65, 65, 60, 130);  --Jolteon
+-- Trainer 1 (grass)
+(69, 1, 50, 75, 35, 40), 
+(114, 1, 65, 55, 115, 60), 
+(103, 1, 95, 95, 85, 55),
+(45, 1, 75, 80, 85, 50), 
+-- Trainer 2, (easy)
+(27, 2, 50, 75, 85, 40), 
+-- Trainer 3, (easy)
+(50, 3, 10, 55, 25, 95), 
+-- Trainer 4, (easy)
+(39, 4, 115, 45, 20, 20), 
+-- Trainer 5, (medium)
+(63, 5, 25, 20, 15, 90),  
+(97, 5, 85, 73, 70, 67),  
+(104, 5, 50, 50, 95, 35),  
+(135, 5, 65, 65, 60, 130), 
+-- Trainer 6, (hard)
+(24, 6, 60, 85, 69, 80),  
+(14, 6, 45, 25, 50, 35),  
+(144, 6, 90, 85, 100, 85), 
+(9, 6, 79, 83, 100, 78),    
+(65, 6, 55, 50, 45, 120), 
+(135, 6, 65, 65, 60, 130);  
 
 
