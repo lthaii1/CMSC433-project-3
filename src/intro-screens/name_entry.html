@@ -119,18 +119,22 @@
     </style>
 </head>
 <body>
-
+    <!-- Setup background -->
     <div class="background"></div>
 
+    <!-- Name entry -->
     <div class="content">
         <h2>Enter Your Name</h2>
         
+        <!-- Show sprite -->
         <img id="sprite-preview" class="character-preview" src="" alt="Selected Player">
 
+        <!-- User input -->
         <div class="input-container">
             <input type="text" id="name-input" placeholder="YOUR NAME" maxlength="12" autofocus>
         </div>
 
+        <!-- Confirm button -->
         <div class="btn-group">
             <button class="btn" onclick="window.location.href='title_screen.html'">Back</button>
             <button class="btn confirm-btn" onclick="confirmName()">Confirm</button>
@@ -138,9 +142,11 @@
     </div>
 
     <script>
+        // Sprite
         const spriteEl = document.getElementById("sprite-preview");
         spriteEl.src = "https://archives.bulbagarden.net/media/upload/c/ca/Spr_FRLG_Red.png";
 
+        // Check name is valid
         function confirmName() {
             const name = document.getElementById("name-input").value.trim();
             if (!name) {
@@ -148,7 +154,7 @@
                 return;
             }
 
-            // Maintain list of created player names
+            // List of created player names in localstorage
             let savedNames = [];
             try {
                 const stored = localStorage.getItem("savedNames");
@@ -159,6 +165,7 @@
                 console.error("Error parsing savedNames:", e);
             }
 
+            // Check if name is already taken
             if (savedNames.includes(name)) {
                 alert("Name already taken, select a new one");
                 return;

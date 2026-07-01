@@ -160,20 +160,25 @@
     </style>
 </head>
 <body>
-
+    <!-- Title Screen Background -->
     <div class="background"></div>
 
+    <!-- Title Screen -->
     <div class="content">
+        <!-- Title -->
         <div class="title">Pokémon</div>
         <div class="subtitle">CMSC433 | Group 1</div>
         
+        <!-- Start Button -->
         <button id="start-button" class="start-btn" onclick="handleStart()">Click to Start</button>
 
+        <!-- Menu Options -->
         <div id="menu-options" class="menu-container">
             <button class="menu-btn" onclick="window.location.href='name_entry.html'">New Game</button>
             <button id="continue-btn" class="menu-btn" onclick="showSaves()">Continue Game</button>
         </div>
 
+        <!-- List of Save Files -->
         <div id="save-list-container" class="save-list-container">
             <div id="save-list" class="save-list"></div>
             <button class="back-btn" onclick="goBackToMenu()">Back</button>
@@ -181,6 +186,7 @@
     </div>
 
     <script>
+        // Get saved name from localstorage
         function getSavedNames() {
             let savedNames = [];
             try {
@@ -200,21 +206,24 @@
             return savedNames;
         }
 
+        // Start button
         function handleStart() {
             const savedNames = getSavedNames();
             document.getElementById("start-button").style.display = "none";
             
+            // Check if save game is present
             if (savedNames.length > 0) {
-                // If there is a save game present, show New Game and Continue Game
+                // Save game present
                 document.getElementById("menu-options").style.display = "flex";
                 document.getElementById("continue-btn").style.display = "block";
             } else {
-                // If not, only option should be New Game
+                // No save game
                 document.getElementById("menu-options").style.display = "flex";
                 document.getElementById("continue-btn").style.display = "none";
             }
         }
 
+        // Show save files
         function showSaves() {
             document.getElementById("menu-options").style.display = "none";
             const saveListContainer = document.getElementById("save-list-container");
@@ -236,6 +245,7 @@
             saveListContainer.style.display = "flex";
         }
 
+        // Return to menu
         function goBackToMenu() {
             document.getElementById("save-list-container").style.display = "none";
             document.getElementById("menu-options").style.display = "flex";
