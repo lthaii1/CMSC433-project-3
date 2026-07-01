@@ -65,6 +65,7 @@ var hoverTarget = false;
 //used to store which pokemon is out and the battle situation
 const playerName = localStorage.getItem("playerName");
 const battleType = localStorage.getItem("battleType");
+var noPokemon = false;
 var playerIndex = 0;
 var enemyIndex = 0;
 var trainer = false;
@@ -151,8 +152,6 @@ function loadImage(src, callback) {
     img.src = src;
 }
 
-
-
 initValues();
 
 //used to load in the teams and set any variables
@@ -160,14 +159,12 @@ async function initValues() {
     //load in player pokemon 
     const teamRes = await fetch("load_team.php?name=" + playerName);
     const teamData = await teamRes.json();
-    console.log("teamData from PHP:", teamData);
-
 
     playerTeam = teamData.map(p => ({
         id: p.id,
         name: p.name,
         hp: p.current_hp,
-        maxHP: p.max_hp,
+        maxHP: p.current_hp,
         attack: p.attack,
         def: p.defense,
         speed: p.speed,
@@ -175,7 +172,14 @@ async function initValues() {
         type2: p.type2,
         img: p.image_path
     }));
-    console.log("playerTeam mapped:", playerTeam);
+    
+    //draw the goback screen when you have no pokemon
+    if (playerTeam.length === 0) {
+        noPokemon = true;
+        goBack();
+        return;
+    }
+    
     //checks if we are battling a trainer
     if (battleType == "trainer") trainer = true;
 
@@ -208,7 +212,7 @@ async function initValues() {
             id: p.id,
             name: p.name,
             hp: p.current_hp,
-            maxHP: p.max_hp,
+            maxHP: p.current_hp,
             attack: p.attack,
             def: p.defense,
             speed: p.speed,
@@ -262,6 +266,7 @@ async function loadMoves(team, teamMoves) {
     }
 }
 
+//adds the move name to the battle UI
 function loadMoveNames() {
     battleUI.moves = [];
     var moves = playerMoves[playerIndex];
@@ -272,8 +277,49 @@ function loadMoveNames() {
 
 }
 
+//gets draws when you have no pokemon
+function goBack() {
+    ctx.fillStyle = "#f0e4e4";
+    ctx.fillRect(0, 0, battleIMG.width, battleIMG.height);
+
+    ctx.fillStyle = "black";
+    ctx.font = "60px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    
+    ctx.fillText(
+        "You have no Pokemon.",
+        battleIMG.width / 2,
+        battleIMG.height / 2 - 150
+    );
+      ctx.fillText(
+        "Go to the slot machine to collect your pokemon",
+        battleIMG.width / 2,
+        battleIMG.height / 2 - 50
+    );
+    
+    var  btnX = battleIMG.width / 2 - 200;
+    var  btnY = battleIMG.height / 2 + 20;
+
+    if (hoverTarget === "goback") ctx.fillStyle = "#ffffcc";
+    else ctx.fillStyle = "white";
+    ctx.fillRect(btnX, btnY, btnW, btnH);
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(btnX, btnY, btnW, btnH);
+
+    ctx.fillStyle = "black";
+    ctx.font = "50px Arial";
+    ctx.fillText("\u2190 Go Back", btnX + btnW / 2, btnY + btnH / 2);
+
+    requestAnimationFrame(goBack);
+}
+
 //draws the battle screen with all its componites 
 function drawBattleArena(area) {
+    
+
     var bg = new Image();
     bg.src = backgrounds[area];
 
@@ -796,9 +842,24 @@ battleIMG.addEventListener("mousemove", handleMouseMove);
 //helper function to see if the mouse is within the box 
 //for the battle ui stuff
 function getHoverTarget(mouseX, mouseY) {
+    if (noPokemon) {
+        var  boxX = battleIMG.width / 2 - 200;
+        var  boxY = battleIMG.height / 2 + 20;
+
+        if(
+            mouseX >= boxX &&
+            mouseX <= boxX + btnW &&
+            mouseY >= boxY &&
+            mouseY <= boxY + btnH
+        ) return "goback";
+        
+        return null;
+    }
 
     //if you are in a battle you can not click on anything
     if (battleUI.mode === "battle") return null;
+
+    
     
     //checks if the mouse is within the textbox when the ui 
     //is in intro mode
@@ -810,9 +871,8 @@ function getHoverTarget(mouseX, mouseY) {
             mouseX <= boxX + boxW &&
             mouseY >= boxY &&
             mouseY <= boxY + boxH
-        ) {
-            return "textbox";
-        }
+        ) return "textbox";
+        
         return null;
     }
     //checks is the mouse is in one of the move boxes
@@ -825,9 +885,7 @@ function getHoverTarget(mouseX, mouseY) {
                 mouseX <= pos.x + btnW &&
                 mouseY >= pos.y &&
                 mouseY <= pos.y + btnH
-            ) {
-                return { type: "move", index: i };
-            }
+            ) return { type: "move", index: i }; 
         }
 
         //run button area
@@ -840,10 +898,8 @@ function getHoverTarget(mouseX, mouseY) {
             mouseX <= itemX + itemW &&
             mouseY >= itemY &&
             mouseY <= itemY + itemH
-        ) {
-            return "run";
-        }
-
+        ) return "run";
+        
         //switch button area
         var itemX = 1350;
         var itemY = 820;
@@ -854,9 +910,9 @@ function getHoverTarget(mouseX, mouseY) {
             mouseX <= itemX + itemW &&
             mouseY >= itemY &&
             mouseY <= itemY + itemH
-        ) {
-            return "switch";
-        }
+        )return "switch";
+        
+        return null;
     }
     
     if (battleUI.mode === "end") {
@@ -867,9 +923,8 @@ function getHoverTarget(mouseX, mouseY) {
             mouseX <= boxX + boxW &&
             mouseY >= boxY &&
             mouseY <= boxY + boxH
-        ) {
-            return "end";
-        }
+        )return "end";
+    
         return null;
     }
 
@@ -884,11 +939,10 @@ function getHoverTarget(mouseX, mouseY) {
                     mouseY >= pos.y &&
                     mouseY <= pos.y + switchH &&
                     playerTeam[i].hp >0 //not fainted
-                ) {
-                    return { type: "poke", index: i };
-                }
+                ) return { type: "poke", index: i };
             }
         }
+        return null;
     }
     return null;
 }
@@ -911,7 +965,7 @@ function handleMouseMove(event) {
     if(hoverTarget) battleIMG.style.cursor = "pointer";
     else battleIMG.style.cursor= "default";
     
-    drawBattleArena(encounter); // redraw to show highlight
+    if (!noPokemon) drawBattleArena(encounter); // redraw to show highlight
 }
 
 async function handleCanvasClick(event) {
@@ -929,6 +983,13 @@ async function handleCanvasClick(event) {
     //if the mouse is not in a clickable area
     //then return and dont waste time checking
     if (!target) return; 
+
+    if (target === "goback") {
+        battleMusic.pause();
+        battleMusic.currentTime = 0;   
+
+        window.location.href = "openworld.html";
+    }
 
     //for the intro/textbox
     if (target === "textbox") {
