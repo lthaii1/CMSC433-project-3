@@ -338,7 +338,7 @@ INSERT INTO players (id, name) VALUES
 INSERT INTO player_pokemon (pokemon_id, player_id, current_hp, max_hp, cur_attack, cur_defense, cur_speed)
 VALUES
 --pokemon for trainer 1, all grass types
-(69, 1, 50, 50, 75, 35. 40), --Bellsprout
+(69, 1, 50, 50, 75, 35, 40), --Bellsprout
 (114, 1, 65, 65, 55, 115, 60), --Tangela
 (103, 1, 95, 95, 95, 85, 55), --Exeggutor
 (45, 1, 75, 75, 80, 85, 50), --Vileplume
@@ -361,8 +361,8 @@ VALUES
 --pokemon for trainer 6, hardest level
 (24, 6, 60, 60, 85, 69, 80),  --Arbok
 (14, 6, 45, 45, 25, 50, 35),  --Kakuna
-(144, 6, 90, 85, 100, 85),  --Articuno
-(9, 6, 79, 83, 100, 78),    --Blatoise
+(144, 6, 90, 90, 85, 100, 85),  --Articuno
+(9, 6, 79, 79, 83, 100, 78),    --Blatoise
 (65, 6, 55, 55, 50, 45, 120), --Alakazam
 (135, 6, 65, 65, 65, 60, 130);  --Jolteon
 
