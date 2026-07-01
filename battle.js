@@ -987,10 +987,13 @@ async function handleCanvasClick(event) {
             }
 
             if (enemyDead) {
-                //increase stats of all the pokemon 
                 
                 battleMusic.pause();
-                battleMusic.currentTime = 0; 
+                battleMusic.currentTime = 0;
+                
+                //increase stats of all the pokemon 
+                await trainTeam(playerTeam, playerName);   //boost + save
+
 
                 //go to train stuff
                 window.location.href = "openworld.html";
