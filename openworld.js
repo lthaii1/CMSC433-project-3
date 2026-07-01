@@ -491,7 +491,7 @@ function animateDown(){
 
     if(pickUp(MoveX,MoveY)){
 
-        ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
         
     }
 
@@ -571,7 +571,7 @@ function animateUp(){
 
     if(pickUp(MoveX,MoveY)){
 
-        ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
         
     }
     
@@ -657,7 +657,7 @@ function animateRight(){
 
     if(pickUp(MoveX,MoveY)){
 
-        ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
         
     }
     
@@ -736,7 +736,7 @@ function animateLeft(){
 
     if(pickUp(MoveX,MoveY)){
 
-        ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
         
     }
 
