@@ -1,11 +1,14 @@
 const battleIMG = document.getElementById("battleScreen");
 const ctx = battleIMG.getContext('2d');
 
-//adds background music
+//adds music
+const winMusic = new Audio("proj3_audio/winMusic.mp3")
+const loseMusic = new Audio("proj3_audio/loseMusic.mp3")
 const battleMusic = new Audio("proj3_audio/battle_music.mp3");
 battleMusic.loop = true;      
 battleMusic.volume = 0.3;     
-
+winMusic.volume = 0.4;
+loseMusic.volume = 0.4;
 const volumeStep = 0.05;
 
 
@@ -72,7 +75,11 @@ var trainer = false;
 var switchTurn = false; //used to see if you are switching manually
 var playerDead = false;
 var enemyDead = false;
+var gameEnd = false;
 
+//sets how many wins and lose you need to get for winning and losing
+const winMax = 5;
+const loseMax = 5;
 
 //used to store pokemons of each team 
 var playerTeam = [];
@@ -316,10 +323,31 @@ function goBack() {
     requestAnimationFrame(goBack);
 }
 
+function ending(status) {
+    gameEnd = true;
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, battleIMG.width, battleIMG.height);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    if (status === "win") {
+        ctx.fillStyle = "white";
+        ctx.font = "120px Arial";
+        ctx.fillText("YOU WIN!", battleIMG.width / 2, battleIMG.height / 2 - 100);
+        winMusic.play();
+    }
+    else {
+        ctx.fillStyle = "white";
+        ctx.font = "120px Arial";
+        ctx.fillText("YOU LOSE!", battleIMG.width / 2, battleIMG.height / 2 - 100);
+        loseMusic.play();
+    }
+    return;
+}
 //draws the battle screen with all its componites 
 function drawBattleArena(area) {
-    
-
+    if(gameEnd) return;
     var bg = new Image();
     bg.src = backgrounds[area];
 
@@ -1052,25 +1080,34 @@ async function handleCanvasClick(event) {
 
     if (target === "end") {
          if(playerDead) {
-                
+                //increase the loss count
+                fetch("update_status.php?name=" + playerName + "&result=loss");
                 battleMusic.pause();
                 battleMusic.currentTime = 0;   
 
-                window.location.href = "openworld.html";
+                const response = await fetch(`load.php?playerName=${playerName}`);
+                const data = await response.json();
+                var lose = parseInt(data.losses);
+                if (lose >= loseMax) ending("lose");
+                else window.location.href = "openworld.html";
+                
             }
 
             if (enemyDead) {
-                //increase stats of all the pokemon 
-                
+                //increase the win count
+                fetch("update_status.php?name=" + playerName + "&result=win");
                 battleMusic.pause();
                 battleMusic.currentTime = 0;
                 
                 //increase stats of all the pokemon 
                 await trainTeam(playerTeam, playerName);   //boost + save
 
-
-                //go to train stuff
-                window.location.href = "openworld.html";
+                const response = await fetch(`load.php?playerName=${playerName}`);
+                const data = await response.json();
+                var win = parseInt(data.wins);
+                if (win >= winMax) ending("win");
+                else window.location.href = "openworld.html";
+               
             }
     }
 }
