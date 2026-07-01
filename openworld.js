@@ -36,6 +36,9 @@ slotMach.src = "imgs/proj3_images/slotMachine.png";
 const pullNoti = new Image();
 pullNoti.src = "imgs/proj3_images/summon.png";
 
+const collectNoti = new Image();
+collectNoti.src = "imgs/proj3_images/collect.png";
+
 //after loading screen obtain the player name
 //use player name to query the database
 var playerName = localStorage.getItem("playerName");
@@ -176,7 +179,7 @@ async function loadGame(){
 //this makes sure that all 6 images are load before load game gets called
 //used as a source, images were not loading on load causing blank screen
 //https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded
-const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti, slotMach, pullNoti];
+const allImgs = [background, background2, background3, spriteImg, teleNoti, battleNoti, slotMach, pullNoti, collectNoti];
 
 Promise.all(allImgs.map(img => new Promise(resolve => { img.onload = resolve; }))).then(() => {
     loadGame();
@@ -315,6 +318,9 @@ const waterM = [{x: 70, y: 170, w: 70, h: 60},];
 
 const caveM = [{x: 520, y: 200, w: 60, h: 60},];
 
+//NOTIFICATION TO COLLECT POKEMON AT SLOT MACHINE
+
+const collectPoke = [{x: 300, y: 50, w: 300, h: 300},];
 
 
 
@@ -392,6 +398,13 @@ function isSlot(newX, newY){
     }else if(currMap ==3){
         return inArea(newX,newY,caveM);
     }
+
+}
+
+function pickUp(newX, newY){
+
+        return inArea(newX,newY,collectPoke);
+
 
 }
 
@@ -476,6 +489,12 @@ function animateDown(){
 
     }
 
+    if(pickUp(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        
+    }
+
     if(baseFrame % updateFrame == 0){
     if(frameDown < 3){
         frameDown++;
@@ -548,6 +567,12 @@ function animateUp(){
         if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
 
+    }
+
+    if(pickUp(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        
     }
     
 
@@ -629,6 +654,12 @@ function animateRight(){
         if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
 
     }
+
+    if(pickUp(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        
+    }
     
 
     if(baseFrame % updateFrame == 0){
@@ -701,6 +732,12 @@ function animateLeft(){
         if (currMap == 2)ctx.drawImage(pullNoti, 700, 0, 600, 300);
         if(currMap ==3)ctx.drawImage(pullNoti, 500, 200, 600, 300);
 
+    }
+
+    if(pickUp(MoveX,MoveY)){
+
+        if(currMap == 1)ctx.drawImage(collectNoti, 500, 200, 600, 300);
+        
     }
 
     if(baseFrame % updateFrame == 0){
