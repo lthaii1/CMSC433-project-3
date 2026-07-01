@@ -327,7 +327,7 @@ INSERT INTO pokemon_attacks (pokemon_id, attack_id) VALUES
 -- Each trainer gets between 1-6 pokemon
 -- There are 4 trainers for each trainer encounter to choose from
 -- ============================================================
-INSERT INTO player (id, name) VALUES
+INSERT INTO players (id, name) VALUES
 (1, 'Joe'), 
 (2, 'May'), 
 (3, 'Gary'), 
