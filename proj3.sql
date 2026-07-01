@@ -320,3 +320,50 @@ INSERT INTO pokemon_attacks (pokemon_id, attack_id) VALUES
 (145, 41), (145, 42), (145, 50),
 -- Dragonite (Dragon/Flying)
 (149, 58), (149, 59), (149, 50), (149, 29);
+
+
+-- ============================================================
+-- SEED DATA: trainer
+-- Each trainer gets between 1-6 pokemon
+-- There are 4 trainers for each trainer encounter to choose from
+-- ============================================================
+INSERT INTO player (id, name) VALUES
+(1, 'Joe'), 
+(2, 'May'), 
+(3, 'Gary'), 
+(4, 'Barry'), 
+(5, 'Ash'), 
+(6, 'Red');
+
+INSERT INTO player_pokemon (pokemon_id, player_id, current_hp, max_hp, cur_attack, cur_defense, cur_speed)
+VALUES
+--pokemon for trainer 1, all grass types
+(69, 1, 50, 50, 75, 35. 40), --Bellsprout
+(114, 1, 65, 65, 55, 115, 60), --Tangela
+(103, 1, 95, 95, 95, 85, 55), --Exeggutor
+(45, 1, 75, 75, 80, 85, 50), --Vileplume
+
+--pokemon for trainer 2,  easy trainer
+(27, 2, 50, 50, 75, 85, 40), --Sandshrew
+
+--pokemon for trainer 3,  easy trainer
+(50, 3, 10, 10, 55, 25, 95), --Diglett
+
+--pokemon for trainer 4,  easy trainer
+(39, 4, 115, 115, 45, 20, 20), --Jigglypuff
+
+--pokemon for triner 5, medium level
+(63, 5, 25, 25, 20, 15, 90),  --Abra
+(97, 5, 85, 85, 73, 70, 67),  --Hypno
+(104, 5, 50,50, 50, 95, 35),  --Cubone
+(135, 5, 65, 65, 65, 60, 130),  --Jolteon
+
+--pokemon for trainer 6, hardest level
+(24, 6, 60, 60, 85, 69, 80),  --Arbok
+(14, 6, 45, 45, 25, 50, 35),  --Kakuna
+(144, 6, 90, 85, 100, 85),  --Articuno
+(9, 6, 79, 83, 100, 78),    --Blatoise
+(65, 6, 55, 55, 50, 45, 120), --Alakazam
+(135, 6, 65, 65, 65, 60, 130);  --Jolteon
+
+

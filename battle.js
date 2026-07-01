@@ -9,7 +9,7 @@ battleMusic.volume = 0.3;
 const volumeStep = 0.05;
 
 
-//need so music play, need to click for music to play for the autoplay policy
+//toggles the mucisc with 'm' and the volume is adjusted using arrow keys
 var battleMusicStarted = false;
 document.addEventListener("keydown", function(event) {
     if(event.key === "m") {
@@ -47,6 +47,15 @@ var encounter = "";
 
 //store the pokemon loaded in, prevents flickering of pokemon
 var imageCache = {};
+//stores the name of the triners that could appear
+const weightedTrainer = [
+    "May", "May", "May", "May", "May", //24% to get thre trainer Mary
+    "Gary", "Gary", "Gary", "Gary", "Gary", //24% to get thre trainer Garry
+    "Barry", "Barry", "Barry", "Barry", "Barry", //24% to get thre trainer Barry
+    "Joe", "Joe", "Joe", //14% to get the trainer Joe
+    "Ash", "Ash", //9% to get trainer Ash
+    "Red" //5% to get trainer Red
+];
 
 //used to animate the pokemon 
 var playerOffsetX = 0;
@@ -189,7 +198,8 @@ async function initValues() {
     }
     else {
         //load in the trainer
-        const trainerRes = await fetch("load_team.php?name=Joe");
+        var trainer = weightedTrainers[Math.floor(Math.random() * weightedTrainers.length)];
+        const trainerRes = await fetch("load_team.php?name=" + trainer);
         const trainerData = await trainerRes.json();
 
         enemyTeam = trainerData.map(p => ({
@@ -988,7 +998,7 @@ async function handleCanvasClick(event) {
 
             if (enemyDead) {
                 //increase stats of all the pokemon 
-                
+
                 battleMusic.pause();
                 battleMusic.currentTime = 0; 
 
