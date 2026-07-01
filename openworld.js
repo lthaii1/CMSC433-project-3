@@ -320,7 +320,7 @@ const caveM = [{x: 520, y: 200, w: 60, h: 60},];
 
 //NOTIFICATION TO COLLECT POKEMON AT SLOT MACHINE
 
-const collectPoke = [{x: 300, y: 50, w: 500, h: 500},];
+const collectPoke = [{x: 300, y: 50, w: 300, h: 300},];
 
 
 
