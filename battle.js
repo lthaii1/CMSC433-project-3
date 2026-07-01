@@ -231,7 +231,7 @@ async function initValues() {
 
     var initialMessage = "";
     //set local varibles
-    if (trainer) initialMessage = "Trainer " + trainerName +  " Appeared!";
+    if (trainer) initialMessage = "Trainer " + trainerName +  " Wants to Battle!";
     else initialMessage = "A Wild "+ enemyTeam[enemyIndex].name + " Appeared!";
     battleUI.message = initialMessage;
 
@@ -348,6 +348,7 @@ function ending(status) {
 //draws the battle screen with all its componites 
 function drawBattleArena(area) {
     if(gameEnd) return;
+
     var bg = new Image();
     bg.src = backgrounds[area];
 
