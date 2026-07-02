@@ -15,9 +15,10 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 - Training: Makiya
 
 ## How to Configure, Compile, and Run
-1.
-2.
-3.
+1. Install the project zip file
+2. Start up xampp apache web server & mysql database
+3. Import "proj3.sql" in localhost myphp admin and make sure the database and tables exist.
+4. Go src/intro-screens/title_screen.html to start/play the game!
 
 
 ## Known Project Issues
