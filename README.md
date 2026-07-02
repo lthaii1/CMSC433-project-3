@@ -43,6 +43,8 @@ and play the game!!!
 5. "can you make a sign/message like the previous say "press f to pull pokemon""-google gemini (leo)
 6. "can you make a message to say "collect your pokemon at the slot machine DONT FORGET"-google gemini (leo)
 7. "fetch api javascript syntax for post request"-chatgpt (leo)
+8. Used Copilot to create the the background images for the battle screens
+
 
 
 
