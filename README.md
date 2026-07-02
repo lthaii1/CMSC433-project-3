@@ -55,4 +55,4 @@ and play the game!!!
 3. https://stackoverflow.com/questions/73312067/get-the-data-sent-with-javascript-fetch-on-the-sent-page (leo)
 4. https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded (leo)
 5. https://youtu.be/_MyPLZSGS3s?si=hwmtXHhazJnU0lC3 (leo)
-6. pokemondb.net
+6. pokemondb.net(Aaliyah)
