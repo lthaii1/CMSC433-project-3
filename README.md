@@ -23,7 +23,11 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 
 ## LLM/AI Prompts Used
 1. For the open world aspect of the game I used Gemini to generate images for the backgrounds. I would use prompts like "can you create a 5:3 retro pokemon background for a game that im making"
-2. 
+2. "can you make a message in the same theme that says "fast travel""-google gemini
+3. "with the same sign just replace with "Press F to Battle" -google gemini
+4. "can you make a sprite of a slot machine"-google gemini
+5. "can you make a sign/message like the previous say "press f to pull pokemon""-google gemini
+6. "can you make a message to say "collect your pokemon at the slot machine DONT FORGET"-google gemini
 
 
 
