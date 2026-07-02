@@ -15,9 +15,21 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 - Training: Makiya
 
 ## How to Configure, Compile, and Run
-1.
-2.
-3.
+1. Have git and xampp instail 
+    -if you do not have git installed go to https://git-scm.com/install/windows
+    -if you do not have xampp installed go to https://www.apachefriends.org/download.html
+2. Open up xampp and click start next to Apache and MySQL
+3. In termial navigate to where you have xampp installed and go to 
+   the htdocs folder
+    - for windows run: cd  C:\xampp\htdocs
+    - for mac run: 
+4. Run the following command to go clone the repository
+    - git clone https://github.com/lthaii1/CMSC433-project-3.git
+5. Go to http://localhost/phpmyadmin/
+6. Click the import button and choose proj3.sql to import
+7. Go to
+http://localhost/proj3/CMSC433-project-3/src/intro-screens/title_screen.html
+and play the game!!!
 
 
 ## Known Project Issues
@@ -25,6 +37,7 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 
 ## LLM/AI Prompts Used
 1. For the open world aspect of the game I used Gemini to generate images for the backgrounds. I would use prompts like "can you create a 5:3 retro pokemon background for a game that im making"
+2. All the battle background were created using copoit
 
 
 
