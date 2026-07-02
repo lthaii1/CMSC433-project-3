@@ -1,5 +1,5 @@
  ## Student Information
-- Members: Leo Thai
+- Members: Aaliyah I, Jack X, Leo T, Raymond L, Danny T, Makiya S
 - Group:1
 
 # CMSC433-project-3
