@@ -56,3 +56,6 @@ and play the game!!!
 4. https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded (leo)
 5. https://youtu.be/_MyPLZSGS3s?si=hwmtXHhazJnU0lC3 (leo)
 6. pokemondb.net(Aaliyah)
+7. https://www.w3schools.com/php/func_math_mt_rand.asp (danny)
+8. https://www.w3schools.com/php/php_mysql_prepared_statements.asp (danny)
+9. https://www.w3schools.com/mysql/mysql_orderby.asp (danny)
