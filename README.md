@@ -7,6 +7,12 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 
  
 ## Contribution
+-Intro Screen: Raymond
+-Open World: Leo
+-Battle: Jack
+-Summoning: Danny
+-Database: Aaliyah
+-Training: Makiya
 
 ## How to Configure, Compile, and Run
 1.
