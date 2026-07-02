@@ -37,7 +37,5 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 2. https://stackoverflow.com/questions/71442633/how-to-send-request-to-php-file-via-fetch-api-post-method (leo)
 3. https://stackoverflow.com/questions/73312067/get-the-data-sent-with-javascript-fetch-on-the-sent-page (leo)
 4. https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded (leo)
-5. 
-
-
+5. https://youtu.be/_MyPLZSGS3s?si=hwmtXHhazJnU0lC3 (leo)
 6. 
