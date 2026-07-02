@@ -21,11 +21,9 @@ Web-based game named Pokémon Battle. You can use any Pokémon to design a game 
 4. Go src/intro-screens/title_screen.html to start/play the game!
 
 
-## Known Project Issues
-1. 
-
 ## LLM/AI Prompts Used
 1. For the open world aspect of the game I used Gemini to generate images for the backgrounds. I would use prompts like "can you create a 5:3 retro pokemon background for a game that im making"
+2. 
 
 
 
