@@ -44,6 +44,7 @@ and play the game!!!
 6. "can you make a message to say "collect your pokemon at the slot machine DONT FORGET"-google gemini (leo)
 7. "fetch api javascript syntax for post request"-chatgpt (leo)
 8. Used Copilot to create the the background images for the battle screens
+9. Understanding of junction tables - claude (Aaliyah)
 
 
 
@@ -54,4 +55,4 @@ and play the game!!!
 3. https://stackoverflow.com/questions/73312067/get-the-data-sent-with-javascript-fetch-on-the-sent-page (leo)
 4. https://stackoverflow.com/questions/11071314/javascript-execute-after-all-images-have-loaded (leo)
 5. https://youtu.be/_MyPLZSGS3s?si=hwmtXHhazJnU0lC3 (leo)
-6. 
+6. pokemondb.net
